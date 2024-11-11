@@ -9,6 +9,7 @@
         <li>
           <h1>优鲜</h1>
         </li>
+        <li><h2>优选生鲜，鲜美每一天</h2></li>
       </ul>
     </nav>
     <button class="loginButton" @click="redirectToLogin">开始探索</button>
@@ -84,6 +85,10 @@
 
 .navbar ul li a:hover {
   text-decoration: underline;
+}
+
+.navbar ul li h2{
+  text-align: center;
 }
 
 .loginButton {
