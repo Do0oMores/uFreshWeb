@@ -51,24 +51,25 @@ export default {
 			if (username.value && password_1.value && password_2.value) {
 				if (password_1.value === password_2.value) {
 					axios
-						.get(`/api/register`, {
-							params: {
-								username: username.value,//用户名
-								userpassword: password_1.value,//密码
-								phone: phone.value//电话号码
-							}
+						.post(`/api/register`, {
+							user_name: username.value,//用户名
+							password: password_1.value,//密码
+							phone: phone.value//电话号码
 						}
 						)
 						.then((response) => {
 							console.log(response.data);
+							const data = response.data;
+							const statusCode = Object.keys(data)[0];
+							const message = data[statusCode];
 							//处理后端响应
-							if (response.data.code === 200) {
-								ElMessage.success(response.data.msg);
+							if (statusCode === "200") {
+								ElMessage.success(message);
 								setTimeout(() => {
 									router.push('/login');
 								}, 1000);
 							} else {
-								ElMessage.error(response.data.msg);
+								ElMessage.error(message);
 							}
 						})
 						.catch((error) => {

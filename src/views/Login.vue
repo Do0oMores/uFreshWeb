@@ -50,7 +50,7 @@ const fetchData = async () => {
 	if (userName.value && userPassword.value) {
 		try {
 			const response = await axios.post('/api/login', {
-				username: userName.value,
+				user_name: userName.value,
 				password: userPassword.value
 			});
 			const data = response.data;
