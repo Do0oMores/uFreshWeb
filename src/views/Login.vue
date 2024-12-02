@@ -49,17 +49,17 @@ const fetchData = async () => {
 	//判断不为空
 	if (userName.value && userPassword.value) {
 		try {
-			const response = await axios.get(`/api/login`, {
-				params: {
-					userName: userName.value,
-					userPassword: userPassword.value
-				}
+			const response = await axios.post('/api/login', {
+				username: userName.value,
+				password: userPassword.value
 			});
 			const data = response.data;
-			if (data.code === 200) {
-				ElMessage.success(data.msg);
+			const statusCode = Object.keys(data)[0];
+			const message = data[statusCode];
+			if (statusCode === "200") {
+				ElMessage.success(message);
 				sessionStorage.setItem('isLoggedIn', 'true');
-				sessionStorage.setItem('userID',data.userID);
+				sessionStorage.setItem('userID', data.userID);
 				console.log(data.userID);
 				setTimeout(() => {
 					GlobalVar.username = userName.value;
@@ -70,7 +70,7 @@ const fetchData = async () => {
 					}
 				}, 1000);
 			} else {
-				ElMessage.error(data.msg);
+				ElMessage.error(message);
 			}
 		} catch (error) {
 			console.error(error);
