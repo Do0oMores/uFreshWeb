@@ -87,6 +87,7 @@ const fetchData = async () => {
 * {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 }
 
 html,
@@ -94,6 +95,7 @@ body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	font-family: 'Arial', sans-serif;
 }
 
 .container {
@@ -106,71 +108,92 @@ body {
 	justify-content: center;
 	align-items: center;
 	padding-bottom: 20px;
+	text-align: center;
 }
 
 .extra-content {
-	margin-top: 300px;
-	text-align: center;
+	margin-top: 280px;
 	color: white;
+	font-size: 18px;
 }
 
-
 .login-wrapper {
-	background-color: rgba(255, 255, 255, 0.4);
-	box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
-	width: 358px;
-	height: 588px;
-	border-radius: 15px;
-	padding: 0 50px;
+	margin-top: 10%;
+	background-color: rgba(255, 255, 255, 0.8);
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+	width: 380px;
+	padding: 40px 50px;
+	border-radius: 20px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	backdrop-filter: blur(3px);
+	backdrop-filter: blur(8px);
+	transition: all 0.8s ease;
+}
+
+.login-wrapper:hover {
+	box-shadow: 0 5px 30px rgba(0, 0, 0, 0.4);
+	transform: translateY(-5px);
 }
 
 .header {
-	font-size: 38px;
-	font-weight: bold;
-	text-align: center;
-	margin-bottom: 20px;
+	font-size: 36px;
+	font-weight: 700;
+	margin-bottom: 30px;
+	color: #2c3e50;
 }
 
 .input-item {
 	display: block;
 	width: 100%;
-	margin-bottom: 20px;
-	border: 0;
-	padding: 10px;
-	border-bottom: 1px solid rgb(128, 125, 125);
-	font-size: 15px;
+	padding: 12px;
+	margin-bottom: 18px;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	font-size: 16px;
 	outline: none;
+	transition: border-color 0.3s ease;
+}
+
+.input-item:focus {
+	border-color: #3498db;
+	box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
 }
 
 .input-item::placeholder {
-	text-transform: uppercase;
+	color: #7f8c8d;
 }
 
 .loginButton {
-	text-align: center;
-	padding: 10px;
 	width: 100%;
+	padding: 12px;
 	margin-top: 20px;
 	background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
 	color: #fff;
+	font-size: 16px;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-image 0.8s ease, transform 0.8s ease;
 }
 
 .loginButton:hover {
 	background-image: linear-gradient(to left, #a6c1ee, #fbc2eb);
+	transform: translateY(-3px);
 }
 
 .msg {
-	text-align: center;
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
 a {
 	text-decoration: none;
-	color: #8387cd;
+	color: #3498db;
+	font-weight: 600;
+}
+
+a:hover {
+	text-decoration: underline;
 }
 </style>
