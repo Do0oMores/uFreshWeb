@@ -1,6 +1,9 @@
 <template>
 	<div class="container">
 		<div class="register-wrapper">
+			<div class="gif-wrapper">
+				<img src="../pic/register.gif" alt="register Animation" class="register-gif" />
+			</div>
 			<div class="header">注册您的新账号</div>
 			<div class="form-wrapper">
 				<form @submit.prevent="fetchData">
@@ -173,14 +176,14 @@ body {
 }
 
 .extra-content {
-	margin-top: 80px;
+	margin-top: 50px;
 	text-align: center;
 	color: white;
 	font-size: 18px;
 }
 
 .register-wrapper {
-	margin-top: 10%;
+	margin-top: 5%;
 	background-color: rgba(255, 255, 255, 0.7);
 	box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
 	width: 380px;
@@ -295,5 +298,19 @@ a:hover {
 
 .btn-captcha:hover {
   background-color: #45a049;
+}
+
+.gif-wrapper {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.register-gif {
+	width: 100%;
+	height: auto;
+	max-width: 300px;
+	display: block;
+	margin: 0 auto;
+	transition: opacity 0.8s ease-in-out;
 }
 </style>

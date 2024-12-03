@@ -1,6 +1,9 @@
 <template>
 	<div class="container">
 		<div class="login-wrapper">
+			<div class="gif-wrapper">
+				<img src="../pic/login.gif" alt="Login Animation" class="login-gif" />
+			</div>
 			<div class="header">登录</div>
 			<div class="form-wrapper">
 				<form @submit.prevent="fetchData">
@@ -118,7 +121,7 @@ body {
 }
 
 .login-wrapper {
-	margin-top: 10%;
+	margin-top: 3%;
 	background-color: rgba(255, 255, 255, 0.8);
 	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
 	width: 380px;
@@ -195,5 +198,19 @@ a {
 
 a:hover {
 	text-decoration: underline;
+}
+
+.gif-wrapper {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.login-gif {
+	width: 100%;
+	height: auto;
+	max-width: 300px;
+	display: block;
+	margin: 0 auto;
+	transition: opacity 0.8s ease-in-out;
 }
 </style>
