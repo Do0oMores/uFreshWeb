@@ -150,13 +150,61 @@ export default {
             this.isEditingProfileInfo = true;
         },
         // 保存个人资料按钮点击
-        saveProfileInfo() {
+        async saveProfileInfo() {
             this.isEditingProfileInfo = false;
-            this.$message.success('个人资料已保存');
+            try {
+                axios.post('/api/verify', {
+                    email: this.email,
+                    code: this.captcha
+                }).then((response => {
+                    const data = response.data;
+                    const statusCode = Object.keys(data)[0];
+                    if (statusCode === "200") {
+                        try {
+                            axios.post('/api/saveuser', {
+                                user_id: this.userId,
+                                user_name: this.tableData.user_name,
+                                password: this.tableData.password,
+                                email: this.tableData.email
+                            }).then((response => {
+                                const data = response.data;
+                                const statusCode = Object.keys(data)[0];
+                                const message = data[statusCode];
+                                if (statusCode === "200") {
+                                    ElMessage.success(message)
+                                } else {
+                                    ElMessage.error(message)
+                                }
+                            }))
+                        }
+                        catch (error) {
+                            console.log(error.$message);
+                            ElMessage.error("服务器错误，请稍后再试")
+                        }
+                    }
+                }))
+            } catch (error) {
+                console.log(error.$message);
+                ElMessage.error("服务器错误，请稍后再试")
+            }
         },
         // 发送验证码
-        sendVerificationCode() {
-            this.$message.success('验证码已发送！');
+        async sendVerificationCode() {
+            try {
+                const response = await axios.post('/api/mail', {
+                    email: this.tableData.email
+                });
+                const data = response.data;
+                const statusCode = Object.keys(data)[0];
+                const message = data[statusCode];
+                if (statusCode === "200") {
+                    ElMessage.success(message)
+                } else {
+                    ElMessage.error(message)
+                }
+            } catch (error) {
+                ElMessage.error("服务器错误，请稍后再试");
+            }
         },
         // 编辑配送信息按钮点击
         editDeliveryInfo() {

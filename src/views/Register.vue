@@ -271,33 +271,36 @@ a:hover {
 }
 
 .captcha-wrapper {
-  display: flex;
-  width: 100%;
-  margin-bottom: 20px;
+	display: flex;
+	width: 100%;
+	margin-bottom: 20px;
 }
 
 .captcha-input {
-  flex: 2; /* 设置为输入框占用的比例 */
-  border-radius: 5px;
-  font-size: 14px;
-  padding: 12px;
-  margin-right: 10px; /* 保证输入框与按钮之间有间隙 */
+	flex: 2;
+	/* 设置为输入框占用的比例 */
+	border-radius: 5px;
+	font-size: 14px;
+	padding: 12px;
+	margin-right: 10px;
+	/* 保证输入框与按钮之间有间隙 */
 }
 
 .btn-captcha {
-  flex: 1; /* 设置为按钮占用的比例 */
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 12px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.8s ease;
-  font-size: 15px;
+	flex: 1;
+	/* 设置为按钮占用的比例 */
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	padding: 12px;
+	cursor: pointer;
+	border-radius: 5px;
+	transition: background-color 0.8s ease;
+	font-size: 15px;
 }
 
 .btn-captcha:hover {
-  background-color: #45a049;
+	background-color: #45a049;
 }
 
 .gif-wrapper {
