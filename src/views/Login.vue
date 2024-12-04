@@ -76,12 +76,10 @@ export default {
 						password: userPassword.value
 					});
 					const data = response.data;
-					const statusCode = Object.keys(data)[0];
-					const message = data[statusCode];
 
-					if (statusCode === "200") {
+					if (data.code === 200) {
 						// 登录成功
-						ElMessage.success(message);
+						ElMessage.success(data.msg);
 						sessionStorage.setItem('isLoggedIn', 'true');
 						sessionStorage.setItem('userID', data.userID);
 						GlobalVar.username = userName.value;  // 存储到全局变量
@@ -95,7 +93,7 @@ export default {
 						}, 1000);
 					} else {
 						// 登录失败
-						ElMessage.error(message);
+						ElMessage.error(data.msg);
 					}
 				} catch (error) {
 					console.error(error);
