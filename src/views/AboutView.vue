@@ -9,7 +9,9 @@
         <li>
           <h1>优鲜</h1>
         </li>
-        <li><h2>优选生鲜，鲜美每一天</h2></li>
+        <li>
+          <h2>优选生鲜，鲜美每一天</h2>
+        </li>
       </ul>
     </nav>
     <button class="loginButton" @click="redirectToLogin">开始探索</button>
@@ -87,7 +89,7 @@
   text-decoration: underline;
 }
 
-.navbar ul li h2{
+.navbar ul li h2 {
   text-align: center;
 }
 
@@ -113,10 +115,16 @@
 </style>
 
 <script>
+import { useRouter } from 'vue-router';
 export default {
-  methods: {
-    redirectToLogin() {
-      this.$router.push('/login')
+  setup() {
+    const router = useRouter();
+
+    const redirectToLogin = () => {
+      router.push('/login');
+    };
+    return {
+      redirectToLogin
     }
   }
 }

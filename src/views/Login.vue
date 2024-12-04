@@ -25,62 +25,94 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import GlobalVar from "../stores/global";
 
-const router = useRouter();
-const userName = ref('');
-const route = useRoute();
-const userPassword = ref('');
+export default {
+	setup() {
 
-const gotoRegister = () => {
-	router.push('/register');
-};
+		const router = useRouter();
+		const route = useRoute();
+		const userName = ref('');
+		const userPassword = ref('');
 
-//跳转失败提示信息
-onMounted(() => {
-	if (route.query.message) {
-		ElMessage.error(route.query.message as string);
-	}
-});
+		// 跳转到注册页面
+		const gotoRegister = () => {
+			router.push('/register');
+		};
 
-const fetchData = async () => {
-	//判断不为空
-	if (userName.value && userPassword.value) {
-		try {
-			const response = await axios.post('/api/login', {
-				user_name: userName.value,
-				password: userPassword.value
-			});
-			const data = response.data;
-			const statusCode = Object.keys(data)[0];
-			const message = data[statusCode];
-			if (statusCode === "200") {
-				ElMessage.success(message);
-				sessionStorage.setItem('isLoggedIn', 'true');
-				sessionStorage.setItem('userID', data.userID);
-				console.log(data.userID);
-				setTimeout(() => {
-					GlobalVar.username = userName.value;
-					if (data.role === "admin") {
-						router.push('/admin');
-					} else {
-						router.push('/user');
-					}
-				}, 1000);
+		// 处理路由中传递的消息提示
+		onMounted(() => {
+			// 检查是否已刷新过页面
+			if (!sessionStorage.getItem('hasRefreshed')) {
+				// 标记为已经刷新过
+				sessionStorage.setItem('hasRefreshed', 'true');
+				// 刷新页面
+				window.location.reload();
 			} else {
-				ElMessage.error(message);
+				// 页面已经刷新过，显示信息
+				if (route.query.message) {
+					ElMessage.error(route.query.message as string);
+				}
+				// 重置刷新标识
+				sessionStorage.removeItem('hasRefreshed');
 			}
-		} catch (error) {
-			console.error(error);
-			ElMessage.error("请求失败，请稍后重试！");
-		}
-	} else {
-		ElMessage.error("账号或者密码不能为空！");
+			if (route.query.message) {
+				ElMessage.error(route.query.message as string);
+			}
+		});
+
+		// 提交登录请求
+		const fetchData = async () => {
+			// 判断输入是否为空
+			if (userName.value && userPassword.value) {
+				try {
+					const response = await axios.post('/api/login', {
+						user_name: userName.value,
+						password: userPassword.value
+					});
+					const data = response.data;
+					const statusCode = Object.keys(data)[0];
+					const message = data[statusCode];
+
+					if (statusCode === "200") {
+						// 登录成功
+						ElMessage.success(message);
+						sessionStorage.setItem('isLoggedIn', 'true');
+						sessionStorage.setItem('userID', data.userID);
+						GlobalVar.username = userName.value;  // 存储到全局变量
+						setTimeout(() => {
+							// 根据角色跳转不同页面
+							if (data.role === "admin") {
+								router.push('/admin');
+							} else {
+								router.push('/user');
+							}
+						}, 1000);
+					} else {
+						// 登录失败
+						ElMessage.error(message);
+					}
+				} catch (error) {
+					console.error(error);
+					ElMessage.error("请求失败，请稍后重试！");
+				}
+			} else {
+				// 输入验证
+				ElMessage.error("账号或者密码不能为空！");
+			}
+		};
+
+		return {
+			userName,
+			userPassword,
+			fetchData,
+			gotoRegister
+		};
 	}
 };
 </script>
