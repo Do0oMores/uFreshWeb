@@ -115,8 +115,8 @@ export default {
             isEditingAvatar: false, // 控制头像编辑状态
             isEditingProfileInfo: false, // 控制个人信息编辑状态
             isEditingDeliveryInfo: false, // 控制配送信息编辑状态
-            avatarUrl: '', // 头像 URL
-            captcha: '', // 验证码
+            avatarUrl: '',
+            captcha: '',
             tableData: [],
             editIndex: -1,
             userId: null
@@ -133,25 +133,22 @@ export default {
     },
     methods: {
         async handleAvatarChange(file) {
+            console.log(this.userId);
             if (file.status === 'success') {
-                // 显示本地预览
+
                 this.avatarUrl = URL.createObjectURL(file.raw);
 
-                // 上传到服务器
                 const formData = new FormData();
-                formData.append('file', file.raw);  // 传递图片文件
+                formData.append('file', file.raw);
+                formData.append('user_id', this.userId);
 
                 try {
-                    const response = await axios.post('/api/upload', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    });
+                    const response = await axios.post('/api/upload', formData);
                     const data = response.data;
 
                     if (data.code === 200) {
                         ElMessage.success(data.msg);
-                        // 假设返回的数据包含图片文件名，可以构建头像URL
+
                         this.avatarUrl = `/uploads/${data.filename}`;
                     } else {
                         ElMessage.error(data.msg);
