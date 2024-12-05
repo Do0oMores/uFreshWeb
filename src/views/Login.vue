@@ -40,25 +40,19 @@ export default {
 		const userName = ref('');
 		const userPassword = ref('');
 
-		// 跳转到注册页面
 		const gotoRegister = () => {
 			router.push('/register');
 		};
 
-		// 处理路由中传递的消息提示
 		onMounted(() => {
-			// 检查是否已刷新过页面
+
 			if (!sessionStorage.getItem('hasRefreshed')) {
-				// 标记为已经刷新过
 				sessionStorage.setItem('hasRefreshed', 'true');
-				// 刷新页面
 				window.location.reload();
 			} else {
-				// 页面已经刷新过，显示信息
 				if (route.query.message) {
 					ElMessage.error(route.query.message as string);
 				}
-				// 重置刷新标识
 				sessionStorage.removeItem('hasRefreshed');
 			}
 			if (route.query.message) {
@@ -66,9 +60,7 @@ export default {
 			}
 		});
 
-		// 提交登录请求
 		const fetchData = async () => {
-			// 判断输入是否为空
 			if (userName.value && userPassword.value) {
 				try {
 					const response = await axios.post('/api/login', {
@@ -76,9 +68,7 @@ export default {
 						password: userPassword.value
 					});
 					const data = response.data;
-
 					if (data.code === 200) {
-						// 登录成功
 						ElMessage.success(data.msg);
 						sessionStorage.setItem('isLoggedIn', 'true');
 						sessionStorage.setItem('userID', data.userID);
@@ -92,7 +82,6 @@ export default {
 							}
 						}, 1000);
 					} else {
-						// 登录失败
 						ElMessage.error(data.msg);
 					}
 				} catch (error) {
@@ -100,7 +89,6 @@ export default {
 					ElMessage.error("请求失败，请稍后重试！");
 				}
 			} else {
-				// 输入验证
 				ElMessage.error("账号或者密码不能为空！");
 			}
 		};
