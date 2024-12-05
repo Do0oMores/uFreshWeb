@@ -3,39 +3,47 @@
         <el-form class="select-div">
             <h1 class="title">查询和编辑用户信息</h1>
             <el-form-item label="">
-                <el-input type="text" v-model="username" placeholder="预查询用户名" autocomplete="off"></el-input>
+                <el-input type="text" v-model="username" placeholder="请输入用户名" autocomplete="off" class="input-field">
+                </el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" style="width:100%;" @click="fetchData()">
+                <el-button type="primary" style="width:100%;" @click="fetchData()" class="action-btn">
                     查询
                 </el-button>
             </el-form-item>
         </el-form>
         <div>
-            <el-table :data="usertableData" stripe style="width: 100%">
-                <el-table-column prop="id" label="用户ID" width="180" />
-                <el-table-column prop="name" label="用户名" width="180" />
+            <el-table :data="usertableData" stripe style="width: 100%" class="user-table">
+                <el-table-column prop="user_id" label="用户ID" width="180" />
+                <el-table-column prop="user_name" label="用户名" width="180" />
+                <el-table-column prop="email" label="电子邮件" />
                 <el-table-column prop="phone" label="电话" />
-                <el-table-column prop="is_admin" label="是否为管理员" />
-                <el-table-column prop="register_date" label="注册日期" />
+                <el-table-column prop="admin_enabled" label="是否为管理员" />
+                <el-table-column prop="register_time" label="注册日期" />
             </el-table>
         </div>
     </div>
     <div v-if="!isSelected">
-        <el-button type="primary" style="width:100%;" @click="back()">
+        <el-button type="primary" style="width:100%;" @click="back()" class="back-btn">
             当前查询的用户是 [{{ username }}] 点击返回重新查询其他用户
         </el-button>
-        <el-table :data="tableData" stripe style="width: 100%">
-            <el-table-column prop="id" label="ID" width="180">
+        <el-table :data="tableData" stripe style="width: 100%" class="edit-table">
+            <el-table-column prop="id" label="ID">
                 <template #default="scope">
                     <el-input v-if="editIndex === scope.$index" v-model="scope.row.id" placeholder="ID"></el-input>
                     <span v-else>{{ scope.row.id }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="name" label="姓名" width="180">
+            <el-table-column prop="name" label="姓名">
                 <template #default="scope">
                     <el-input v-if="editIndex === scope.$index" v-model="scope.row.name" placeholder="姓名"></el-input>
                     <span v-else>{{ scope.row.name }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column prop="email" label="电子邮件">
+                <template #default="scope">
+                    <el-input v-if="editIndex === scope.$index" v-model="scope.row.email" placeholder="电子邮件"></el-input>
+                    <span v-else>{{ scope.row.email }}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="phone" label="电话">
@@ -62,8 +70,9 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template #default="scope">
-                    <el-button v-if="editIndex !== scope.$index" @click="editRow(scope.$index)">编辑</el-button>
-                    <el-button v-else type="primary" @click="saveRow(scope.$index)">确认</el-button>
+                    <el-button v-if="editIndex !== scope.$index" @click="editRow(scope.$index)"
+                        class="edit-btn">编辑</el-button>
+                    <el-button v-else type="primary" @click="saveRow(scope.$index)" class="save-btn">确认</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -75,11 +84,12 @@ import axios from 'axios';
 import { ElMessage } from "element-plus";
 
 interface TableData {
-    id: string;
-    name: string;
+    user_id: string;
+    user_name: string;
+    email: string;
     phone: string;
-    is_admin: string;
-    register_date: string;
+    admin_enabled: string;
+    register_time: string;
 }
 
 export default {
@@ -101,7 +111,7 @@ export default {
             this.username = this.username.split(/[\t\r\f\n\s]+/g).join('');
             // 判断用户名是否为空
             if (this.username != "") {
-                axios.get('/api/current?username=' + this.username).then(response => {
+                axios.post('/api/current?username=' + this.username).then(response => {
                     if (response.data.code == 200) {
                         ElMessage.success(response.data.msg);
                         this.tableData = response.data.Data;
@@ -132,11 +142,12 @@ export default {
             // 发起请求传递编辑后的数据
             axios.get('/api/save-user', {
                 params: {
-                    userID: userData.id,
-                    name: userData.name,
+                    userID: userData.user_id,
+                    name: userData.user_name,
+                    email: userData.email,
                     phone: userData.phone,
-                    isAdmin: userData.is_admin,
-                    registerDate: userData.register_date
+                    isAdmin: userData.admin_enabled,
+                    registerDate: userData.register_time
                 }
             }).then(response => {
                 if (response.data.code == 200) {
@@ -151,14 +162,14 @@ export default {
             });
         },
         async fetchUsers() {
-            try{
-                const response=await axios.get("/api/fetch-users");
-                if(response.data.code===200){
-                    this.usertableData=response.data.Data;
-                }else{
+            try {
+                const response = await axios.post("/api/fetch-users");
+                if (response.data.code === 200) {
+                    this.usertableData = response.data.Data;
+                } else {
                     ElMessage.error(response.data.msg);
                 }
-            }catch(error){
+            } catch (error) {
                 ElMessage.error("服务器错误，请稍后再试")
             }
         }
@@ -168,19 +179,81 @@ export default {
 
 <style scoped>
 .select-div {
-    border-radius: 10px;
-    margin: 0px auto;
-    width: 350px;
-    padding: 30px 35px 15px 35px;
+    border-radius: 8px;
+    margin: 0 auto;
+    width: 380px;
+    padding: 35px 40px;
     background: #fff;
     border: 1px solid #eaeaea;
     text-align: left;
-    box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
 }
 
 .title {
-    margin: 0px auto 40px auto;
+    margin-bottom: 35px;
     text-align: center;
     color: #505458;
+    font-size: 24px;
+}
+
+.input-field {
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn {
+    font-size: 16px;
+    font-weight: 600;
+    background-color: #409EFF;
+    border-color: #409EFF;
+}
+
+.action-btn:hover {
+    background-color: #66b1ff;
+    border-color: #66b1ff;
+}
+
+.back-btn {
+    margin-top: 20px;
+    font-size: 16px;
+    background-color: #67C23A;
+    border-color: #67C23A;
+}
+
+.back-btn:hover {
+    background-color: #7ecf55;
+    border-color: #7ecf55;
+}
+
+.user-table, .edit-table {
+    margin-top: 20px;
+}
+
+.edit-btn, .save-btn {
+    margin: 0 5px;
+    padding: 6px 12px;
+    border-radius: 5px;
+}
+
+.edit-btn {
+    background-color: #F8B800;
+    border-color: #F8B800;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #f9c436;
+}
+
+.save-btn {
+    background-color: #67C23A;
+    border-color: #67C23A;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #7ecf55;
+    border-color: #7ecf55;
 }
 </style>
