@@ -184,7 +184,7 @@ export default {
                     const statusCode = Object.keys(data)[0];
                     if (statusCode === "200") {
                         try {
-                            axios.post('/api/saveuser', {
+                            axios.post('/api/save-user', {
                                 user_id: this.userId,
                                 user_name: this.tableData.user_name,
                                 password: this.tableData.password,
@@ -234,9 +234,26 @@ export default {
             this.isEditingDeliveryInfo = true;
         },
         // 保存配送信息按钮点击
-        saveDeliveryInfo() {
+        async saveDeliveryInfo() {
             this.isEditingDeliveryInfo = false;
-            this.$message.success('配送信息已保存');
+            try {
+                axios.post('/api/save-shipping', {
+                    user_id: this.userId,
+                    address: this.tableData.address,
+                    phone: this.tableData.phone
+                }).then((response => {
+                    const data = response.data;
+                    const statusCode = Object.keys(data)[0];
+                    const message = data[statusCode];
+                    if (statusCode === "200") {
+                        ElMessage.success(message)
+                    } else {
+                        ElMessage.error(message)
+                    }
+                }))
+            } catch (error) {
+                ElMessage.error("服务器错误，请稍后再试")
+            }
         },
         async fetchInformation() {
             try {
