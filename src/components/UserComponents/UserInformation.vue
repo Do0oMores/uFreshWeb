@@ -7,9 +7,10 @@
                     <!-- 头像和用户名板块 -->
                     <div class="avatar-username-section">
                         <div class="avatar-container">
-                            <el-upload class="avatar-upload" action="#" show-file-list="false"
-                                :on-change="handleAvatarChange" :disabled="!isEditingAvatar">
-                                <el-avatar size="120" :src="avatarUrl" alt="用户头像" class="avatar-img" />
+                            <el-upload class="avatar-upload" action="/api/upload" show-file-list="false"
+                                :on-change="handleAvatarChange" :disabled="!isEditingAvatar" id="imageInput">
+                                <el-avatar size="120" :src="avatarUrl" alt="用户头像" class="avatar-img"
+                                    id="imageContainer" />
                             </el-upload>
                             <div class="username-container">
                                 <span class="username">{{ tableData.user_name }}</span>
@@ -131,17 +132,42 @@ export default {
         }
     },
     methods: {
-        handleAvatarChange(file) {
+        async handleAvatarChange(file) {
             if (file.status === 'success') {
+                // 显示本地预览
                 this.avatarUrl = URL.createObjectURL(file.raw);
+
+                // 上传到服务器
+                const formData = new FormData();
+                formData.append('file', file.raw);  // 传递图片文件
+
+                try {
+                    const response = await axios.post('/api/upload', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    const data = response.data;
+
+                    if (data.code === 200) {
+                        ElMessage.success(data.msg);
+                        // 假设返回的数据包含图片文件名，可以构建头像URL
+                        this.avatarUrl = `/uploads/${data.filename}`;
+                    } else {
+                        ElMessage.error(data.msg);
+                    }
+                } catch (error) {
+                    console.log(error);
+                    ElMessage.error('上传失败');
+                }
             }
         },
         // 开始编辑头像
-        editAvatar() {
+        async editAvatar() {
             this.isEditingAvatar = true;
         },
         // 保存头像
-        saveAvatar() {
+        async saveAvatar() {
             this.isEditingAvatar = false;
             this.$message.success('头像已保存');
         },
@@ -253,7 +279,6 @@ export default {
                 ElMessage.error('服务器错误，请稍后再试')
             }
             this.editIndex = -1;
-            //console.log('Saved data:', this.tableData);
         },
         getUserId() {
             return sessionStorage.getItem('userID') || null;
@@ -266,20 +291,14 @@ export default {
 .el-card {
     padding: 20px;
     border-radius: 12px;
-    /* 调整圆角 */
     background-color: #ffffff;
-    /* 白色背景色 */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    /* 增加阴影效果 */
     margin-bottom: 20px;
-    /* 增加卡片之间的间距 */
     transition: box-shadow 0.3s ease;
-    /* 增加悬浮时的过渡效果 */
 }
 
 .el-card:hover {
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
-    /* 鼠标悬浮时加强阴影 */
 }
 
 .card-content {
@@ -303,7 +322,6 @@ export default {
     border: 2px solid #409EFF;
     margin-right: 15px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    /* 给头像加上轻微阴影 */
 }
 
 .username-container {
@@ -316,7 +334,6 @@ export default {
     font-size: 18px;
     font-weight: 600;
     color: #333;
-    /* 深色文字 */
 }
 
 .edit-button {
@@ -351,7 +368,6 @@ export default {
     font-weight: 500;
     margin-bottom: 15px;
     color: #555;
-    /* 设置颜色 */
 }
 
 .profile-info,
@@ -376,7 +392,6 @@ export default {
 
 .input-field:focus {
     border-color: #409EFF;
-    /* 聚焦时边框颜色 */
 }
 
 .send-captcha-btn {
@@ -415,7 +430,6 @@ export default {
 
 .avatar-upload .el-avatar:hover {
     transform: scale(1.1);
-    /* 头像悬停时放大 */
 }
 
 @media (max-width: 768px) {
@@ -425,13 +439,11 @@ export default {
 
     .el-card {
         padding: 15px;
-        /* 调整卡片内边距 */
     }
 
     .avatar-img {
         width: 100px;
         height: 100px;
-        /* 头像大小适应小屏幕 */
     }
 }
 </style>
