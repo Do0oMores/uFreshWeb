@@ -30,14 +30,13 @@
         <el-table :data="tableData" stripe style="width: 100%" class="edit-table">
             <el-table-column prop="id" label="ID">
                 <template #default="scope">
-                    <el-input v-if="editIndex === scope.$index" v-model="scope.row.id" placeholder="ID"></el-input>
-                    <span v-else>{{ scope.row.id }}</span>
+                    <span>{{ scope.row.user_id }}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="name" label="姓名">
                 <template #default="scope">
-                    <el-input v-if="editIndex === scope.$index" v-model="scope.row.name" placeholder="姓名"></el-input>
-                    <span v-else>{{ scope.row.name }}</span>
+                    <el-input v-if="editIndex === scope.$index" v-model="scope.row.user_name" placeholder="姓名"></el-input>
+                    <span v-else>{{ scope.row.user_name }}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="email" label="电子邮件">
@@ -54,20 +53,25 @@
             </el-table-column>
             <el-table-column prop="is_admin" label="是否为管理员">
                 <template #default="scope">
-                    <el-select v-if="editIndex === scope.$index" v-model="scope.row.is_admin" placeholder="是否为管理员">
-                        <el-option label="是" value="是"></el-option>
-                        <el-option label="否" value="否"></el-option>
+                    <el-select v-if="editIndex === scope.$index" v-model="scope.row.admin_enabled" placeholder="是否为管理员">
+                        <el-option label="是" value="true"></el-option>
+                        <el-option label="否" value="false"></el-option>
                     </el-select>
-                    <span v-else>{{ scope.row.is_admin }}</span>
+                    <span v-else>{{ scope.row.admin_enabled }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="register_date" label="注册日期">
+            <el-table-column prop="register_time" label="注册日期">
                 <template #default="scope">
-                    <el-date-picker v-if="editIndex === scope.$index" v-model="scope.row.register_date" type="date"
-                        placeholder="选择日期"></el-date-picker>
-                    <span v-else>{{ scope.row.register_date }}</span>
+                    <span>{{ scope.row.register_time }}</span>
                 </template>
             </el-table-column>
+            <!-- <el-table-column prop="register_date" label="注册日期">
+                <template #default="scope">
+                    <el-date-picker v-if="editIndex === scope.$index" v-model="scope.row.register_time" type="date"
+                        placeholder="选择日期"></el-date-picker>
+                    <span v-else>{{ scope.row.register_time }}</span>
+                </template>
+            </el-table-column> -->
             <el-table-column label="操作">
                 <template #default="scope">
                     <el-button v-if="editIndex !== scope.$index" @click="editRow(scope.$index)"
@@ -93,6 +97,9 @@ interface TableData {
 }
 
 export default {
+    setup() {
+        const user_id = "";
+    },
     data() {
         return {
             isSelected: true,
@@ -111,15 +118,17 @@ export default {
             this.username = this.username.split(/[\t\r\f\n\s]+/g).join('');
             // 判断用户名是否为空
             if (this.username != "") {
-                axios.post('/api/current?username=' + this.username).then(response => {
+                axios.post('/api/select-user', {
+                    user_name: this.username
+                }).then(response => {
                     if (response.data.code == 200) {
-                        ElMessage.success(response.data.msg);
-                        this.tableData = response.data.Data;
+                        ElMessage.success(response.data.message);
+                        this.tableData = response.data.data;
                         setTimeout(() => {
                             this.isSelected = false;
                         }, 500);
                     } else {
-                        ElMessage.error(response.data.msg)
+                        ElMessage.error(response.data.message)
                     }
                 }).catch(error => {
                     console.log(error);
@@ -140,21 +149,19 @@ export default {
             const userData = this.tableData[index];
 
             // 发起请求传递编辑后的数据
-            axios.get('/api/save-user', {
-                params: {
-                    userID: userData.user_id,
-                    name: userData.user_name,
-                    email: userData.email,
-                    phone: userData.phone,
-                    isAdmin: userData.admin_enabled,
-                    registerDate: userData.register_time
-                }
+            axios.post('/api/admin-edit-user', {
+                user_id: userData.user_id,
+                user_name: userData.user_name,
+                email: userData.email,
+                phone: userData.phone,
+                admin_enabled: userData.admin_enabled,
+                register_time: userData.register_time
             }).then(response => {
                 if (response.data.code == 200) {
-                    ElMessage.success(response.data.msg);
+                    ElMessage.success(response.data.message);
                     this.editIndex = -1; // 退出编辑模式
                 } else {
-                    ElMessage.error(response.data.msg);
+                    ElMessage.error(response.data.message);
                 }
             }).catch(error => {
                 console.log(error);
@@ -226,11 +233,13 @@ export default {
     border-color: #7ecf55;
 }
 
-.user-table, .edit-table {
+.user-table,
+.edit-table {
     margin-top: 20px;
 }
 
-.edit-btn, .save-btn {
+.edit-btn,
+.save-btn {
     margin: 0 5px;
     padding: 6px 12px;
     border-radius: 5px;
