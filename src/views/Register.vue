@@ -93,9 +93,7 @@ export default {
 						code: captcha.value
 					}).then((response) => {
 						const data = response.data;
-						const statusCode = Object.keys(data)[0];
-						const message = data[statusCode];
-						if (statusCode === "200") {
+						if (data.code === 200) {
 							axios
 								.post(`/api/register`, {
 									user_name: username.value,//用户名
@@ -105,23 +103,22 @@ export default {
 								.then((response) => {
 									console.log(response.data);
 									const data = response.data;
-									const statusCode = Object.keys(data)[0];
-									const message = data[statusCode];
+
 									//处理后端响应
-									if (statusCode === "200") {
-										ElMessage.success(message);
+									if (data.code === 200) {
+										ElMessage.success(data.message);
 										setTimeout(() => {
 											router.push('/login');
 										}, 1000);
 									} else {
-										ElMessage.error(message);
+										ElMessage.error(data.message);
 									}
 								})
 								.catch((error) => {
 									console.log(error);
 								});
 						} else {
-							ElMessage.error(message);
+							ElMessage.error(data.message);
 						}
 					})
 

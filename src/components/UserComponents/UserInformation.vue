@@ -8,8 +8,9 @@
                     <div class="avatar-username-section">
                         <div class="avatar-container">
                             <el-upload class="avatar-upload" action="/api/upload" show-file-list="false"
-                                :on-change="handleAvatarChange" :disabled="!isEditingAvatar" id="imageInput">
-                                <el-avatar size="120" :src="avatarUrl" alt="用户头像" class="avatar-img"
+                                :on-change="handleAvatarChange" :disabled="!isEditingAvatar" multiple
+                                :file-list="fileList" :before-upload="beforeAvatarUpalod">
+                                <el-avatar size="120" :src="'http://localhost:8081/' + avatarUrl" alt="用户头像" class="avatar-img"
                                     id="imageContainer" />
                             </el-upload>
                             <div class="username-container">
@@ -103,8 +104,6 @@
     </div>
 </template>
 
-
-
 <script>
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
@@ -143,13 +142,15 @@ export default {
                 formData.append('user_id', this.userId);
 
                 try {
-                    const response = await axios.post('/api/upload', formData);
+                    const response = await axios.post('/api/upload', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        }
+                    });
                     const data = response.data;
-
                     if (data.code === 200) {
                         ElMessage.success(data.msg);
-
-                        this.avatarUrl = `/uploads/${data.filename}`;
+                        this.avatarUrl = data.data;
                     } else {
                         ElMessage.error(data.msg);
                     }
@@ -157,6 +158,8 @@ export default {
                     console.log(error);
                     ElMessage.error('上传失败');
                 }
+            } else {
+                console.log("文件未上传")
             }
         },
         // 开始编辑头像
@@ -262,8 +265,10 @@ export default {
                 });
                 const data = response.data;
                 if (data.code === 200) {
-                    console.log(data.Data);
-                    this.tableData = data.Data;
+                    console.log(data.data);
+                    this.tableData = data.data;
+                    this.avatarUrl = data.data.avatar_url;
+                    console.log(this.avatarUrl);
                 } else {
                     ElMessage.error(data.msg);
                 }
@@ -296,6 +301,17 @@ export default {
         },
         getUserId() {
             return sessionStorage.getItem('userID') || null;
+        },
+        beforeAvatarUpalod(file) {
+            const isJPG = file.type === 'image/jpeg';
+            const isPNG = file.type === 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+            if (!isJPG && !isPNG) {
+                this.$message.error('上传格式只能是JPG PNG格式！');
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过2MB！')
+            }
         }
     }
 };
