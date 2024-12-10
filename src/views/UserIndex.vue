@@ -7,6 +7,9 @@
         class="sidebar" :class="{ collapsed: isCollapsed }">
         <el-menu :collapse="isCollapsed" @select="handleSelect" text-color="#fff" active-text-color="#ffd04b"
           background-color="#1f2937" class="menu">
+          <el-menu-item>
+            <img src="../pic/icon/menu_cat.png">
+          </el-menu-item>
           <el-tooltip content="选购" placement="right">
             <el-menu-item index="1">
               <el-icon>
@@ -110,7 +113,8 @@ export default {
     }
   },
   created() {
-    this.$router.push('user/commodity')
+    this.$router.push('user/commodity');
+
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -153,11 +157,17 @@ body {
   font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
-  /* background-image: url("../pic/UserIndexBackgroundImage/index2.jpg"); */
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
   color: #333;
+}
+
+.menu .el-menu-item img {
+  width: 30px; 
+  height: 30px; 
+  margin-right: 10px; 
+  object-fit: contain;
 }
 
 /* 侧边栏样式 */
