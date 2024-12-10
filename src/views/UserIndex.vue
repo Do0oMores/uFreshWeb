@@ -57,7 +57,7 @@
           </el-button>
           <div class="header-title">欢迎来到 <b>优鲜商城</b></div>
           <div class="user-info">
-            <el-avatar size="40" src="../pic/avatar.jpg" class="user-avatar">
+            <el-avatar size="120" :src="'http://localhost:8081/' + avatarUrl" class="user-avatar">
             </el-avatar>
             <el-dropdown @command="handleCommand">
               <span class="el-dropdown-link">
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import global from '@/stores/global';
 import {
   Document,
@@ -109,12 +110,13 @@ export default {
     return {
       Username: global.username,
       isCollapsed: true,
-      isSidebarVisible: true
+      isSidebarVisible: true,
+      avatarUrl: '',
     }
   },
   created() {
     this.$router.push('user/commodity');
-
+    this.fetchAvatarUrl();
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -148,6 +150,21 @@ export default {
     toggleSidebarVisibility() {
       this.isSidebarVisible = !this.isSidebarVisible;
     },
+    fetchAvatarUrl() {
+      const userId = this.getUserId();
+      //console.log("当前userid为：" + userId);
+      if (userId) {
+        axios.post('/api/indexAvatarImageSync', { user_id: userId })
+          .then(response => {
+            if (response.data && response.data.avatarUrl) {
+              this.avatarUrl = response.data.avatarUrl;
+            }
+          })
+          .catch(error => {
+            console.error('获取头像失败:', error);
+          });
+      }
+    }
   }
 }
 </script>
@@ -164,9 +181,9 @@ body {
 }
 
 .menu .el-menu-item img {
-  width: 30px; 
-  height: 30px; 
-  margin-right: 10px; 
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
   object-fit: contain;
 }
 
@@ -205,13 +222,6 @@ body {
   font-weight: bold;
   color: #f0f8ff;
 }
-
-/* .toggle-btn {
-  background-color: #409eff;
-  border-color: #409eff;
-  color: #fff;
-  font-size: 1.2em;
-} */
 
 .user-info {
   display: flex;
