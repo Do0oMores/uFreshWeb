@@ -98,17 +98,22 @@ export default {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: space-between;
+  background-color: #f9f9f9;
+  /* 背景颜色改为白色或更柔和的灰色 */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product {
-  background-color: #23b9b9;
-  border: 1px solid #2d502d;
+  background-color: #ffffff;
+  border: 1px solid #dcdcdc;
   border-radius: 8px;
   padding: 20px;
   width: 30%;
   box-sizing: border-box;
   text-align: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -116,48 +121,52 @@ export default {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+  margin-bottom: 10px;
+  /* 增加图片下方间距 */
 }
 
 .product p {
   margin: 10px 0;
+  color: #555;
+  /* 文本颜色调整为灰色 */
 }
 
 .product p:first-of-type {
   font-weight: bold;
-  /* 商品名称加粗 */
+  font-size: 1.2em;
+  /* 商品名称加粗并稍微增大字体 */
+  color: #333;
 }
 
 .product:hover {
   transform: translateY(-5px);
-  /* 鼠标悬停时上移 */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  /* 鼠标悬停时增加阴影效果 */
 }
 
 .product .price {
-  font-size: 1.2em;
+  font-size: 1.4em;
   font-weight: bold;
   color: #e74c3c;
-  /* 价格的颜色 */
 }
 
 .product button {
-  background: linear-gradient(90deg, #3498db, #2980b9);
+  background: linear-gradient(90deg, #4caf50, #2e7d32);
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1em;
+  margin: 5px;
+  /* 按钮之间增加间距 */
   transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  /* 添加按钮阴影 */
 }
 
 .product button:hover {
-  background: linear-gradient(90deg, #2980b9, #3498db);
-  /* 按钮悬停时的渐变背景颜色 */
+  background: linear-gradient(90deg, #2e7d32, #4caf50);
   transform: translateY(-3px);
-  /* 鼠标悬停时上移 */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  /* 按钮悬停时的阴影效果 */
 }
 </style>
