@@ -161,7 +161,7 @@ body {
 }
 
 .container {
-	background: url("../pic/register.png") no-repeat center center fixed;
+	background: url("../pic/register.jpg") no-repeat center center fixed;
 	background-size: cover;
 	width: 100%;
 	height: 100%;

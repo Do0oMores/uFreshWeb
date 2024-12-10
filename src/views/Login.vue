@@ -4,7 +4,7 @@
 			<div class="gif-wrapper">
 				<img src="../pic/login.gif" alt="Login Animation" class="login-gif" />
 			</div>
-			<div class="header">登录</div>
+			<div class="header">登录您的账号</div>
 			<div class="form-wrapper">
 				<form @submit.prevent="fetchData">
 					<input v-model="userName" type="text" name="userName" id="userName" placeholder="账号"
