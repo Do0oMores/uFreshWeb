@@ -152,7 +152,6 @@ export default {
     },
     fetchAvatarUrl() {
       const userId = this.getUserId();
-      //console.log("当前userid为：" + userId);
       if (userId) {
         axios.post('/api/indexAvatarImageSync', { user_id: userId })
           .then(response => {

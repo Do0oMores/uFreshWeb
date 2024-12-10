@@ -2,8 +2,9 @@
     <div>
         <el-container style="height: 100vh;">
             <!-- 侧边栏 -->
-            <el-aside :style="{ width: isSidebarVisible ? (isCollapsed ? '64px' : '220px') : '0px', transition: 'width 0.3s' }" class="sidebar">
-                <!-- <h2 class="sidebar-title" v-if="isSidebarVisible && !isCollapsed">HaXian管理系统</h2> -->
+            <el-aside
+                :style="{ width: isSidebarVisible ? (isCollapsed ? '64px' : '220px') : '0px', transition: 'width 0.3s' }"
+                class="sidebar">
                 <el-menu default-active="1" @select="handleSelect" text-color="#fff" active-text-color="#ffd04b"
                     background-color="#2c3e50" class="menu" :collapse="isCollapsed">
                     <el-menu-item index="1">
@@ -12,12 +13,19 @@
                         </el-icon>
                         <span v-if="!isCollapsed">用户管理</span>
                     </el-menu-item>
-                    <el-menu-item index="2">
+
+                    <!-- 生鲜商品管理子菜单 -->
+                    <li index="2" trigger="hover" :show-time="300" :hide-time="300">
                         <el-icon>
                             <Location />
                         </el-icon>
-                        <span v-if="!isCollapsed">生鲜商品管理</span>
-                    </el-menu-item>
+                        <span v-if="!isCollapsed" class="submenu-title">生鲜商品管理</span>
+                        <ul class="sub-menu">
+                            <el-menu-item @click="goToAddProductPage">添加商品</el-menu-item>
+                            <el-menu-item @click="goToSearchProductPage">查找商品</el-menu-item>
+                        </ul>
+                    </li>
+
                     <el-menu-item index="3">
                         <el-icon>
                             <Setting />
@@ -91,8 +99,8 @@ export default {
     data() {
         return {
             g_username: GlobalVar.username,
-            isSidebarVisible: true, // 控制侧边栏可见性
-            isCollapsed: false // 控制侧边栏是否折叠
+            isSidebarVisible: true,
+            isCollapsed: false
         }
     },
     methods: {
@@ -117,9 +125,18 @@ export default {
         },
         toggleSidebarVisibility() {
             this.isSidebarVisible = !this.isSidebarVisible;
+            console.log("Sidebar Visible: ", this.isSidebarVisible);  // 调试输出
         },
         toggleCollapse() {
             this.isCollapsed = !this.isCollapsed;
+            console.log("Sidebar Collapsed: ", this.isCollapsed);  // 调试输出
+        },
+        goToAddProductPage() {
+            this.$router.push('/admin/addcommodity');
+        },
+        goToSearchProductPage() {
+            // 在这里处理跳转到查找商品页面
+            this.$router.push('/search-product');
         }
     }
 }
@@ -147,6 +164,7 @@ body {
 }
 
 .menu .el-menu-item {
+    /* display: none; */
     transition: background-color 0.3s ease, transform 0.3s ease;
     padding-left: 20px;
 }
@@ -156,9 +174,9 @@ body {
     transform: translateX(5px);
 }
 
-.menu.collapsed .el-menu-item span {
+/* .menu.collapsed .el-menu-item span {
     display: none;
-}
+} */
 
 /* 顶部导航样式 */
 .header {

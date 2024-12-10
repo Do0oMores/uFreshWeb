@@ -35,7 +35,7 @@ const router = createRouter({
         requireAuth: true,
         roles: ['admin']
       },
-      component: () => import('../views/Admin.vue'),
+      component: () => import('../views/AdminIndex.vue'),
       children: [
         {
           path: '',
@@ -61,6 +61,11 @@ const router = createRouter({
           path: 'reservation',
           name: 'reservation',
           component: () => import('../components/AdminComponents/Reservation.vue')
+        },
+        {
+          path: 'addcommodity',
+          name: 'addcommodity',
+          component:()=>import('../components/AdminComponents/addCommodity.vue')
         }
       ]
     },

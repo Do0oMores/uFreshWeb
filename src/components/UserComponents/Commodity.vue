@@ -1,5 +1,13 @@
 <template>
   <el-main>
+    <!-- 商品轮播图 -->
+    <el-carousel :interval="5000" arrow="always" style="margin-bottom: 20px;">
+      <el-carousel-item v-for="(product, index) in products" :key="product.product_id">
+        <img :src="product.image" alt="product.name" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;" />
+      </el-carousel-item>
+    </el-carousel>
+
+    <!-- 商品展示 -->
     <div class="products">
       <div class="product" v-for="product in products" :key="product.product_id">
         <img :src="product.image" />
@@ -93,13 +101,23 @@ export default {
 </script>
 
 <style scoped>
+/* 轮播图样式 */
+.el-carousel {
+  margin-bottom: 30px;
+}
+
+.el-carousel-item img {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 商品展示 */
 .products {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   justify-content: space-between;
   background-color: #f9f9f9;
-  /* 背景颜色改为白色或更柔和的灰色 */
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -122,26 +140,22 @@ export default {
   height: auto;
   border-radius: 8px;
   margin-bottom: 10px;
-  /* 增加图片下方间距 */
 }
 
 .product p {
   margin: 10px 0;
   color: #555;
-  /* 文本颜色调整为灰色 */
 }
 
 .product p:first-of-type {
   font-weight: bold;
   font-size: 1.2em;
-  /* 商品名称加粗并稍微增大字体 */
   color: #333;
 }
 
 .product:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-  /* 鼠标悬停时增加阴影效果 */
 }
 
 .product .price {
@@ -159,7 +173,6 @@ export default {
   cursor: pointer;
   font-size: 1em;
   margin: 5px;
-  /* 按钮之间增加间距 */
   transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
