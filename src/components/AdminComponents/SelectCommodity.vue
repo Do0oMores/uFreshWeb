@@ -48,6 +48,7 @@
         <el-table-column prop="inventory" label="库存量" />
         <el-table-column prop="mfd" label="生产日期" />
         <el-table-column prop="exp" label="过期时间" />
+        <el-table-column prop="status" label="商品状态" />
       </el-table>
     </div>
   </div>
