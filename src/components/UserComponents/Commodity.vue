@@ -1,21 +1,19 @@
 <template>
   <el-main>
-    <!-- 商品轮播图 -->
     <el-carousel :interval="5000" arrow="always" style="margin-bottom: 20px;">
       <el-carousel-item v-for="(product, index) in products" :key="product.product_id">
-        <img :src="product.image" alt="product.name" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;" />
+        <img :src="'http://localhost:8081' + product.image" alt="product.name" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;" />
       </el-carousel-item>
     </el-carousel>
 
-    <!-- 商品展示 -->
     <div class="products">
       <div class="product" v-for="product in products" :key="product.product_id">
-        <img :src="product.image" />
-        <p>{{ product.name }}</p>
-        <p>{{ product.description }}</p>
-        <p class="price">${{ product.price }}</p>
-        <button @click="addToCart(product.product_id)">加入购物车</button>
-        <button @click="Reservation(product.product_id)">预约</button>
+        <img :src="'http://localhost:8081' + product.image" class="product-image" />
+        <p class="product-name">{{ product.commodity_name }}</p>
+        <div class="product-tags">
+          <span class="product-tag">{{ product.tag }}</span>
+        </div>
+        <p class="price">￥{{ product.price }}</p>
       </div>
     </div>
   </el-main>
@@ -39,10 +37,9 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get('/api/commodity');
+        const response = await axios.post('/api/getUserIndexCommodity');
         if (response.data.code == 200) {
-          this.products = response.data.Data;
-          console.log(response.data.Data);
+          this.products = response.data.data;
         }
       } catch (error) {
         ElMessage.error(response.data.msg)
@@ -101,24 +98,12 @@ export default {
 </script>
 
 <style scoped>
-/* 轮播图样式 */
-.el-carousel {
-  margin-bottom: 30px;
-}
-
-.el-carousel-item img {
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* 商品展示 */
 .products {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
-  justify-content: space-between;
-  background-color: #f9f9f9;
   padding: 20px;
+  background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -127,30 +112,9 @@ export default {
   background-color: #ffffff;
   border: 1px solid #dcdcdc;
   border-radius: 8px;
-  padding: 20px;
-  width: 30%;
-  box-sizing: border-box;
+  padding: 15px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.product img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.product p {
-  margin: 10px 0;
-  color: #555;
-}
-
-.product p:first-of-type {
-  font-weight: bold;
-  font-size: 1.2em;
-  color: #333;
 }
 
 .product:hover {
@@ -158,28 +122,38 @@ export default {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
-.product .price {
+.product-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.product-name {
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.product-tags {
+  margin-bottom: 10px;
+}
+
+.product-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-right: 5px;
+  font-size: 0.9em;
+  color: white;
+  background-color: #ff5722;
+  border-radius: 4px;
+}
+
+.price {
   font-size: 1.4em;
   font-weight: bold;
   color: #e74c3c;
-}
-
-.product button {
-  background: linear-gradient(90deg, #4caf50, #2e7d32);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1em;
-  margin: 5px;
-  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.product button:hover {
-  background: linear-gradient(90deg, #2e7d32, #4caf50);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  margin-bottom: 10px;
 }
 </style>

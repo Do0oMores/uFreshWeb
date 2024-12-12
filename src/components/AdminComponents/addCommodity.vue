@@ -2,7 +2,6 @@
   <div class="add-product">
     <h1>添加商品</h1>
     <form @submit.prevent="handleSubmit">
-      <!-- 商品图片 -->
       <div class="form-item">
         <label for="productImage">商品图片</label>
         <input type="file" id="productImage" @change="handleImageUpload" />
@@ -11,13 +10,11 @@
         </div>
       </div>
 
-      <!-- 商品名 -->
       <div class="form-item">
         <label for="productName">商品名</label>
         <input type="text" id="productName" v-model="product.commodity_name" required />
       </div>
 
-      <!-- 商品类别 -->
       <div class="form-item">
         <label for="productCategory">商品类别</label>
         <select id="productCategory" v-model="product.type" required>
@@ -30,37 +27,31 @@
         </select>
       </div>
 
-      <!-- 商品单价 -->
       <div class="form-item">
         <label for="productPrice">商品单价</label>
         <input type="number" id="productPrice" v-model="product.price" required />
       </div>
 
-      <!-- 商品库存 -->
       <div class="form-item">
         <label for="productStock">商品库存</label>
         <input type="number" id="productStock" v-model="product.inventory" required />
       </div>
 
-      <!-- 商品介绍 -->
       <div class="form-item">
         <label for="productDescription">商品介绍</label>
         <textarea id="productDescription" v-model="product.description" required></textarea>
       </div>
 
-      <!-- 商品供应商 -->
       <div class="form-item">
         <label for="productSupplier">商品供应商</label>
         <input type="text" id="productSupplier" v-model="product.support" required />
       </div>
 
-      <!-- 商品生产日期 -->
       <div class="form-item">
         <label for="productManufactureDate">商品生产日期</label>
         <input type="date" id="productManufactureDate" v-model="product.mfg" required />
       </div>
 
-      <!-- 商品保质期 -->
       <div class="form-item">
         <label for="productShelfLife">商品保质期</label>
         <input type="date" id="productShelfLife" v-model="product.exp" required />
