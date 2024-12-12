@@ -5,6 +5,7 @@
             <el-aside
                 :style="{ width: isSidebarVisible ? (isCollapsed ? '64px' : '220px') : '0px', transition: 'width 0.3s' }"
                 class="sidebar">
+                <h2 class="ufresh-title">优鲜管理系统</h2>
                 <el-menu default-active="1" @select="handleSelect" text-color="#fff" active-text-color="#ffd04b"
                     background-color="#2c3e50" class="menu" :collapse="isCollapsed">
                     <el-menu-item index="1">
@@ -15,16 +16,12 @@
                     </el-menu-item>
 
                     <!-- 生鲜商品管理子菜单 -->
-                    <li index="2" trigger="hover" :show-time="300" :hide-time="300">
+                    <el-menu-item index="2"> 
                         <el-icon>
                             <Location />
                         </el-icon>
                         <span v-if="!isCollapsed" class="submenu-title">生鲜商品管理</span>
-                        <ul class="sub-menu">
-                            <el-menu-item @click="goToAddProductPage">添加商品</el-menu-item>
-                            <el-menu-item @click="goToSearchProductPage">查找商品</el-menu-item>
-                        </ul>
-                    </li>
+                    </el-menu-item>
 
                     <el-menu-item index="3">
                         <el-icon>
@@ -155,6 +152,19 @@ body {
     height: 100%;
 }
 
+.ufresh-title {
+    color: #5aff4b; /* 字体颜色 */
+    font-family: 'Arial', sans-serif; /* 字体 */
+    font-size: 24px; /* 字体大小 */
+    font-weight: bold; /* 加粗 */
+    text-align: center; /* 居中 */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 添加文字阴影 */
+    margin: 20px 0; /* 上下间距 */
+    background: linear-gradient(90deg, #bcff5f, #d7fe7b); /* 渐变背景 */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; /* 使用渐变文字 */
+}
+
 /* 侧边栏样式 */
 .sidebar {
     background-color: #2c3e50;
@@ -173,10 +183,6 @@ body {
     background-color: #34495e;
     transform: translateX(5px);
 }
-
-/* .menu.collapsed .el-menu-item span {
-    display: none;
-} */
 
 /* 顶部导航样式 */
 .header {

@@ -1,21 +1,37 @@
 <template>
-    <div v-if="isSelected">
-        <el-form class="select-div">
-            <h1 class="title">查询和编辑用户信息</h1>
-            <el-form-item label="">
-                <el-input type="text" v-model="username" placeholder="请输入用户名" autocomplete="off" class="input-field">
-                </el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" style="width:100%;" @click="fetchData()" class="action-btn">
-                    查询
-                </el-button>
-            </el-form-item>
-        </el-form>
-        <div>
-            <el-table :data="usertableData" stripe style="width: 100%" class="user-table">
-                <el-table-column prop="user_id" label="用户ID" width="180" />
-                <el-table-column prop="user_name" label="用户名" width="180" />
+    <div class="container">
+        <h2 class="title">用户管理</h2>
+        <el-row :gutter="20" class="search-bar">
+            <el-col :span="4">
+                <el-input v-model="username" placeholder="请输入用户名" clearable></el-input>
+            </el-col>
+
+            <el-col :span="4">
+                <el-input v-model="email" placeholder="请输入电子邮件" clearable></el-input>
+            </el-col>
+
+            <el-col :span="4">
+                <el-input v-model="phone" placeholder="请输入电话" clearable></el-input>
+            </el-col>
+
+            <el-col :span="4">
+                <el-date-picker v-model="register_time" placeholder="注册日期" type="date" clearable></el-date-picker>
+            </el-col>
+
+            <el-col :span="2" class="search-actions">
+                <el-button type="primary" @click="fetchData()">查询</el-button>
+            </el-col>
+        </el-row>
+
+        <el-row class="button-group" v-if="isSelected">
+            <el-button type="warning">修改</el-button>
+            <el-button type="success">提交</el-button>
+        </el-row>
+
+        <div class="table-container" v-if="isSelected">
+            <el-table :data="usertableData" stripe style="width: 100%">
+                <el-table-column prop="user_id" label="用户ID" />
+                <el-table-column prop="user_name" label="用户名" />
                 <el-table-column prop="email" label="电子邮件" />
                 <el-table-column prop="phone" label="电话" />
                 <el-table-column prop="admin_enabled" label="是否为管理员" />
@@ -23,63 +39,63 @@
             </el-table>
         </div>
     </div>
-    <div v-if="!isSelected">
+
+    <div v-if="!isSelected" class="container">
         <el-button type="primary" style="width:100%;" @click="back()" class="back-btn">
-            当前查询的用户是 [{{ username }}] 点击返回重新查询其他用户
+            {{ message }} 点击返回重新查询其他用户
         </el-button>
-        <el-table :data="tableData" stripe style="width: 100%" class="edit-table">
-            <el-table-column prop="id" label="ID">
-                <template #default="scope">
-                    <span>{{ scope.row.user_id }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="name" label="姓名">
-                <template #default="scope">
-                    <el-input v-if="editIndex === scope.$index" v-model="scope.row.user_name" placeholder="姓名"></el-input>
-                    <span v-else>{{ scope.row.user_name }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="email" label="电子邮件">
-                <template #default="scope">
-                    <el-input v-if="editIndex === scope.$index" v-model="scope.row.email" placeholder="电子邮件"></el-input>
-                    <span v-else>{{ scope.row.email }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="phone" label="电话">
-                <template #default="scope">
-                    <el-input v-if="editIndex === scope.$index" v-model="scope.row.phone" placeholder="电话"></el-input>
-                    <span v-else>{{ scope.row.phone }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="is_admin" label="是否为管理员">
-                <template #default="scope">
-                    <el-select v-if="editIndex === scope.$index" v-model="scope.row.admin_enabled" placeholder="是否为管理员">
-                        <el-option label="是" value="true"></el-option>
-                        <el-option label="否" value="false"></el-option>
-                    </el-select>
-                    <span v-else>{{ scope.row.admin_enabled }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column prop="register_time" label="注册日期">
-                <template #default="scope">
-                    <span>{{ scope.row.register_time }}</span>
-                </template>
-            </el-table-column>
-            <!-- <el-table-column prop="register_date" label="注册日期">
-                <template #default="scope">
-                    <el-date-picker v-if="editIndex === scope.$index" v-model="scope.row.register_time" type="date"
-                        placeholder="选择日期"></el-date-picker>
-                    <span v-else>{{ scope.row.register_time }}</span>
-                </template>
-            </el-table-column> -->
-            <el-table-column label="操作">
-                <template #default="scope">
-                    <el-button v-if="editIndex !== scope.$index" @click="editRow(scope.$index)"
-                        class="edit-btn">编辑</el-button>
-                    <el-button v-else type="primary" @click="saveRow(scope.$index)" class="save-btn">确认</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+        <div class="table-container">
+            <el-table :data="tableData" stripe style="width: 100%">
+                <el-table-column prop="id" label="ID">
+                    <template #default="scope">
+                        <span>{{ scope.row.user_id }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="name" label="姓名">
+                    <template #default="scope">
+                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.user_name"
+                            placeholder="姓名"></el-input>
+                        <span v-else>{{ scope.row.user_name }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="email" label="电子邮件">
+                    <template #default="scope">
+                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.email"
+                            placeholder="电子邮件"></el-input>
+                        <span v-else>{{ scope.row.email }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="phone" label="电话">
+                    <template #default="scope">
+                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.phone"
+                            placeholder="电话"></el-input>
+                        <span v-else>{{ scope.row.phone }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="is_admin" label="是否为管理员">
+                    <template #default="scope">
+                        <el-select v-if="editIndex === scope.$index" v-model="scope.row.admin_enabled"
+                            placeholder="是否为管理员">
+                            <el-option label="是" value="true"></el-option>
+                            <el-option label="否" value="false"></el-option>
+                        </el-select>
+                        <span v-else>{{ scope.row.admin_enabled }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="register_time" label="注册日期">
+                    <template #default="scope">
+                        <span>{{ scope.row.register_time }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template #default="scope">
+                        <el-button v-if="editIndex !== scope.$index" @click="editRow(scope.$index)"
+                            class="edit-btn">编辑</el-button>
+                        <el-button v-else type="primary" @click="saveRow(scope.$index)" class="save-btn">确认</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
     </div>
 </template>
 
@@ -107,6 +123,10 @@ export default {
             tableData: [] as TableData[],
             editIndex: -1,
             usertableData: [],
+            email: "",
+            phone: '',
+            register_time: '',
+            message:''
         };
     },
     created() {
@@ -122,8 +142,13 @@ export default {
                     user_name: this.username
                 }).then(response => {
                     if (response.data.code == 200) {
-                        ElMessage.success(response.data.message);
+                        ElMessage.success("查询成功");
                         this.tableData = response.data.data;
+                        this.message=response.data.message;
+                        this.username = '';
+                        this.email = '';
+                        this.phone = '';
+                        this.register_time = '';
                         setTimeout(() => {
                             this.isSelected = false;
                         }, 500);
@@ -172,9 +197,9 @@ export default {
             try {
                 const response = await axios.post("/api/fetch-users");
                 if (response.data.code === 200) {
-                    this.usertableData = response.data.Data;
+                    this.usertableData = response.data.data;
                 } else {
-                    ElMessage.error(response.data.msg);
+                    ElMessage.error(response.data.message);
                 }
             } catch (error) {
                 ElMessage.error("服务器错误，请稍后再试")
@@ -185,40 +210,59 @@ export default {
 </script>
 
 <style scoped>
-.select-div {
+.container {
+    padding: 20px;
+    background-color: #f9f9f9;
     border-radius: 8px;
-    margin: 0 auto;
-    width: 380px;
-    padding: 35px 40px;
-    background: #fff;
-    border: 1px solid #eaeaea;
-    text-align: left;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .title {
-    margin-bottom: 35px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
     text-align: center;
-    color: #505458;
-    font-size: 24px;
 }
 
-.input-field {
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+.search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
-.action-btn {
-    font-size: 16px;
-    font-weight: 600;
-    background-color: #409EFF;
-    border-color: #409EFF;
+.search-bar .el-input,
+.search-bar .el-select,
+.search-bar .el-date-picker {
+    width: 100%;
 }
 
-.action-btn:hover {
-    background-color: #66b1ff;
-    border-color: #66b1ff;
+.search-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-group {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: left;
+}
+
+.table-container {
+    margin-top: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.el-table {
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .back-btn {
@@ -231,11 +275,6 @@ export default {
 .back-btn:hover {
     background-color: #7ecf55;
     border-color: #7ecf55;
-}
-
-.user-table,
-.edit-table {
-    margin-top: 20px;
 }
 
 .edit-btn,
