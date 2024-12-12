@@ -7,9 +7,11 @@
       </el-col>
       <el-col :span="4">
         <el-select v-model="productType" placeholder="请选择商品类型" clearable>
-          <el-option label="蔬菜" value="vegetable"></el-option>
-          <el-option label="水果" value="fruit"></el-option>
-          <el-option label="肉类" value="meat"></el-option>
+          <el-option label="时令水果" value="时令水果"></el-option>
+          <el-option label="品质肉禽" value="品质肉禽"></el-option>
+          <el-option label="海鲜水产" value="海鲜水产"></el-option>
+          <el-option label="蔬菜蛋品" value="蔬菜蛋品"></el-option>
+          <el-option label="面点烘焙" value="面点烘焙"></el-option>
         </el-select>
       </el-col>
 
@@ -38,12 +40,12 @@
 
     <div class="table-container">
       <el-table :data="commoditytableData" stripe style="width: 100%">
-        <el-table-column prop="product_id" label="商品ID"/>
-        <el-table-column prop="name" label="商品名"/>
+        <el-table-column prop="commodity_id" label="商品ID"/>
+        <el-table-column prop="commodity_name" label="商品名"/>
         <el-table-column prop="description" label="描述信息" />
         <el-table-column prop="type" label="类别" />
         <el-table-column prop="price" label="单价" />
-        <el-table-column prop="stock" label="库存量" />
+        <el-table-column prop="inventory" label="库存量" />
         <el-table-column prop="mfd" label="生产日期" />
         <el-table-column prop="exp" label="过期时间" />
       </el-table>
@@ -152,11 +154,11 @@ export default {
     },
     async fetchCommodities() {
       try {
-        const response = await axios.get("/api/fetch-commodities");
+        const response = await axios.post("/api/fetch-commodities");
         if (response.data.code === 200) {
-          this.commoditytableData = response.data.Data;
+          this.commoditytableData = response.data.data;
         } else {
-          ElMessage.error(response.data.msg);
+          ElMessage.error(response.data.message);
         }
       } catch (error) {
         ElMessage.error("服务器错误，请稍后再试");

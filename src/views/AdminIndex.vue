@@ -16,7 +16,7 @@
                     </el-menu-item>
 
                     <!-- 生鲜商品管理子菜单 -->
-                    <el-menu-item index="2"> 
+                    <el-menu-item index="2">
                         <el-icon>
                             <Location />
                         </el-icon>
@@ -122,17 +122,14 @@ export default {
         },
         toggleSidebarVisibility() {
             this.isSidebarVisible = !this.isSidebarVisible;
-            console.log("Sidebar Visible: ", this.isSidebarVisible);  // 调试输出
         },
         toggleCollapse() {
             this.isCollapsed = !this.isCollapsed;
-            console.log("Sidebar Collapsed: ", this.isCollapsed);  // 调试输出
         },
         goToAddProductPage() {
             this.$router.push('/admin/addcommodity');
         },
         goToSearchProductPage() {
-            // 在这里处理跳转到查找商品页面
             this.$router.push('/search-product');
         }
     }
@@ -153,16 +150,16 @@ body {
 }
 
 .ufresh-title {
-    color: #5aff4b; /* 字体颜色 */
-    font-family: 'Arial', sans-serif; /* 字体 */
-    font-size: 24px; /* 字体大小 */
-    font-weight: bold; /* 加粗 */
-    text-align: center; /* 居中 */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 添加文字阴影 */
-    margin: 20px 0; /* 上下间距 */
-    background: linear-gradient(90deg, #bcff5f, #d7fe7b); /* 渐变背景 */
+    color: #5aff4b;
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 20px 0;
+    background: linear-gradient(90deg, #bcff5f, #d7fe7b);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; /* 使用渐变文字 */
+    -webkit-text-fill-color: transparent;
 }
 
 /* 侧边栏样式 */
@@ -174,7 +171,6 @@ body {
 }
 
 .menu .el-menu-item {
-    /* display: none; */
     transition: background-color 0.3s ease, transform 0.3s ease;
     padding-left: 20px;
 }
