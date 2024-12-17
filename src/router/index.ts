@@ -14,11 +14,6 @@ const router = createRouter({
       component: () => import('../views/Register.vue')
     },
     {
-      path: '/user',
-      name: 'userRouter',
-      component: () => import('../views/UserIndex.vue')
-    },
-    {
       path: '/view',
       name: 'view',
       component: () => import('../views/AboutView.vue')
@@ -65,7 +60,7 @@ const router = createRouter({
         {
           path: 'addcommodity',
           name: 'addcommodity',
-          component:()=>import('../components/AdminComponents/addCommodity.vue')
+          component: () => import('../components/AdminComponents/addCommodity.vue')
         }
       ]
     },
@@ -107,6 +102,11 @@ const router = createRouter({
           path: 'userinformation',
           name: 'userinformation',
           component: () => import('../components/UserComponents/UserInformation.vue')
+        },
+        {
+          path: 'commoditydetils',
+          name: 'commoditydetils',
+          component: () => import('../components/UserComponents/CommodityDetail.vue')
         }
       ]
     }

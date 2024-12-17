@@ -10,7 +10,7 @@
                             <el-upload class="avatar-upload" action="/api/upload" show-file-list="false"
                                 :on-change="handleAvatarChange" :disabled="!isEditingAvatar" multiple
                                 :file-list="fileList" :before-upload="beforeAvatarUpalod">
-                                <el-avatar size="120" :src="'http://localhost:8081/' + avatarUrl" alt="用户头像" class="avatar-img"
+                                <el-avatar size="120" :src="'http://localhost:8081' + avatarUrl" alt="用户头像" class="avatar-img"
                                     id="imageContainer" />
                             </el-upload>
                             <div class="username-container">

@@ -57,7 +57,7 @@
           </el-button>
           <div class="header-title">欢迎来到 <b>优鲜商城</b></div>
           <div class="user-info">
-            <el-avatar size="120" :src="'http://localhost:8081/' + avatarUrl" class="user-avatar">
+            <el-avatar size="120" :src="'http://localhost:8081' + avatarUrl" class="user-avatar">
             </el-avatar>
             <el-dropdown @command="handleCommand">
               <span class="el-dropdown-link">
@@ -225,7 +225,7 @@ body {
 .user-info {
   display: flex;
   align-items: center;
-  color: #a0cfff;
+  color: #a0ffd9;
 }
 
 .user-avatar {

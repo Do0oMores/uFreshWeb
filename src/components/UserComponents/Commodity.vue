@@ -1,13 +1,13 @@
 <template>
   <el-main>
     <el-carousel :interval="5000" arrow="always" style="margin-bottom: 20px;">
-      <el-carousel-item v-for="(product, index) in products" :key="product.product_id">
+      <el-carousel-item v-for="(product, index) in products" :key="product.commodity_id">
         <img :src="'http://localhost:8081' + product.image" alt="product.name" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;" />
       </el-carousel-item>
     </el-carousel>
 
     <div class="products">
-      <div class="product" v-for="product in products" :key="product.product_id">
+      <div class="product" v-for="product in products" :key="product.commodity_id">
         <img :src="'http://localhost:8081' + product.image" class="product-image" />
         <p class="product-name">{{ product.commodity_name }}</p>
         <div class="product-tags">
