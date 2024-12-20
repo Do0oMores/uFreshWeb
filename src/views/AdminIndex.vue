@@ -33,7 +33,7 @@
                         <el-icon>
                             <IconMenu />
                         </el-icon>
-                        <span v-if="!isCollapsed">预约订单</span>
+                        <span v-if="!isCollapsed">售后订单管理</span>
                     </el-menu-item>
                 </el-menu>
             </el-aside>
@@ -103,7 +103,7 @@ export default {
     methods: {
         handleSelect(key: string, keyPath: string[]) {
             if (key == "1") {
-                this.$router.push('/admin/selectbill')
+                this.$router.push('/admin/usermanage')
             } else if (key == "2") {
                 this.$router.push('/admin/selectresidue')
             } else if (key == "3") {

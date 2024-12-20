@@ -126,7 +126,7 @@ export default {
             email: "",
             phone: '',
             register_time: '',
-            message:''
+            message: ''
         };
     },
     created() {
@@ -136,15 +136,21 @@ export default {
         fetchData() {
             // 用户名中不能有空格
             this.username = this.username.split(/[\t\r\f\n\s]+/g).join('');
+            this.email = this.email.split(/[\t\r\f\n\s]+/g).join('');
+            this.phone = this.phone.split(/[\t\r\f\n\s]+/g).join('');
+            this.register_time = this.register_time.split(/[\t\r\f\n\s]+/g).join('');
             // 判断用户名是否为空
-            if (this.username != "") {
+            if (this.username != "" || this.email != '' || this.phone != '' || this.register_time != '') {
                 axios.post('/api/select-user', {
-                    user_name: this.username
+                    user_name: this.username,
+                    email: this.email,
+                    phone: this.phone,
+                    register_time: this.register_time
                 }).then(response => {
                     if (response.data.code == 200) {
                         ElMessage.success("查询成功");
                         this.tableData = response.data.data;
-                        this.message=response.data.message;
+                        this.message = response.data.message;
                         this.username = '';
                         this.email = '';
                         this.phone = '';
@@ -160,7 +166,7 @@ export default {
                     ElMessage.error("请求失败");
                 });
             } else {
-                ElMessage.error("用户名不能为空");
+                ElMessage.error("请填入需要查询的数据");
             }
         },
         back() {

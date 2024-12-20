@@ -35,12 +35,12 @@ const router = createRouter({
         {
           path: '',
           name: 'home',
-          component: () => import('../components/AdminComponents/SelectUser.vue')
+          component: () => import('../components/AdminComponents/UserManage.vue')
         },
         {
-          path: 'selectbill',
-          name: 'selectbill',
-          component: () => import('../components/AdminComponents/SelectUser.vue')
+          path: 'usermanage',
+          name: 'usermanage',
+          component: () => import('../components/AdminComponents/UserManage.vue')
         },
         {
           path: 'selectresidue',
