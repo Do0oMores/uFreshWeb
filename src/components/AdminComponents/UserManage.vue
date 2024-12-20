@@ -15,17 +15,12 @@
             </el-col>
 
             <el-col :span="4">
-                <el-date-picker v-model="register_time" placeholder="注册日期" type="date" clearable></el-date-picker>
+                <el-date-picker v-model="register_time" placeholder="注册日期" type="date" clearable value-format="YYYY-MM-DD"></el-date-picker>
             </el-col>
 
             <el-col :span="2" class="search-actions">
                 <el-button type="primary" @click="fetchData()">查询</el-button>
             </el-col>
-        </el-row>
-
-        <el-row class="button-group" v-if="isSelected">
-            <el-button type="warning">修改</el-button>
-            <el-button type="success">提交</el-button>
         </el-row>
 
         <div class="table-container" v-if="isSelected">
@@ -138,7 +133,6 @@ export default {
             this.username = this.username.split(/[\t\r\f\n\s]+/g).join('');
             this.email = this.email.split(/[\t\r\f\n\s]+/g).join('');
             this.phone = this.phone.split(/[\t\r\f\n\s]+/g).join('');
-            this.register_time = this.register_time.split(/[\t\r\f\n\s]+/g).join('');
             // 判断用户名是否为空
             if (this.username != "" || this.email != '' || this.phone != '' || this.register_time != '') {
                 axios.post('/api/select-user', {
