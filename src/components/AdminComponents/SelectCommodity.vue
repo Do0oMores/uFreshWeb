@@ -16,15 +16,17 @@
       </el-col>
 
       <el-col :span="4">
-        <el-date-picker v-model="productionDate" placeholder="请选择生产日期" type="date" clearable></el-date-picker>
+        <el-date-picker v-model="productionDate" placeholder="请选择生产日期" type="date" clearable
+          value-format="YYYY-MM-DD"></el-date-picker>
       </el-col>
 
       <el-col :span="4">
-        <el-date-picker v-model="expirationDate" placeholder="请选择过期日期" type="date" clearable></el-date-picker>
+        <el-date-picker v-model="expirationDate" placeholder="请选择过期日期" type="date" clearable
+          value-format="YYYY-MM-DD"></el-date-picker>
       </el-col>
 
       <el-col :span="4">
-        <el-input v-model="manufacturer" placeholder="请输入生产商" clearable></el-input>
+        <el-input v-model="support" placeholder="请输入生产商" clearable></el-input>
       </el-col>
 
       <el-col :span="2" class="search-actions">
@@ -38,18 +40,106 @@
       <el-button type="success">提交</el-button>
     </el-row>
 
-    <div class="table-container">
+    <div v-if="isSelected" class="table-container">
       <el-table :data="commoditytableData" stripe style="width: 100%">
-        <el-table-column prop="commodity_id" label="商品ID"/>
-        <el-table-column prop="commodity_name" label="商品名"/>
+        <el-table-column prop="commodity_id" label="商品ID" />
+        <el-table-column prop="commodity_name" label="商品名" />
         <el-table-column prop="description" label="描述信息" />
         <el-table-column prop="type" label="类别" />
         <el-table-column prop="price" label="单价" />
         <el-table-column prop="inventory" label="库存量" />
         <el-table-column prop="mfd" label="生产日期" />
         <el-table-column prop="exp" label="过期时间" />
+        <el-table-column prop="support" label="生产商" />
         <el-table-column prop="status" label="商品状态" />
+        <el-table-column prop="tag" label="商品标签" />
       </el-table>
+    </div>
+
+    <div v-if="!isSelected" class="container">
+      <el-button type="primary" style="width:100%;" @click="back()" class="back-btn">
+        {{ message }} 点击返回重新查询其它商品
+      </el-button>
+      <div class="table-container">
+        <el-table :data="tableData" stripe style="width: 100%">
+          <el-table-column prop="name" label="商品名">
+            <template #default="scope">
+              <el-input v-if="editIndex === scope.$index" v-model="scope.row.user_name" placeholder="商品名"></el-input>
+              <span v-else>{{ scope.row.commodity_name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="description" label="描述信息">
+            <template #default="scope">
+              <el-input v-if="editIndex === scope.$index" v-model="scope.row.description" placeholder="描述信息"></el-input>
+              <span v-else>{{ scope.row.description }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="price" label="单价">
+            <template #default="scope">
+              <el-input v-if="editIndex === scope.$index" v-model="scope.row.price" placeholder="单价"></el-input>
+              <span v-else>{{ scope.row.price }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="type" label="类别">
+            <template #default="scope">
+              <el-select v-if="editIndex === scope.$index" v-model="scope.row.type" placeholder="类别">
+                <el-option label="时令水果" value="时令水果"></el-option>
+                <el-option label="品质肉禽" value="品质肉禽"></el-option>
+                <el-option label="海鲜水产" value="海鲜水产"></el-option>
+                <el-option label="蔬菜蛋品" value="蔬菜蛋品"></el-option>
+                <el-option label="面点烘焙" value="面点烘焙"></el-option>
+              </el-select>
+              <span v-else>{{ scope.row.type }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="inventory" label="库存量">
+            <template #default="scope">
+              <el-input v-if="editIndex === scope.$index" v-model="scope.row.inventory" placeholder="库存量"></el-input>
+              <span v-else>{{ scope.row.inventory }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="mfd" label="生产日期">
+            <template #default="scope">
+              <el-input v-if="editIndex === scope.$index" v-model="scope.row.mfd" placeholder="生产日期"></el-input>
+              <span v-else>{{ scope.row.mfd }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="exp" label="过期时间">
+            <template #default="scope">
+              <el-input v-if="editIndex === scope.$index" v-model="scope.row.exp" placeholder="过期时间"></el-input>
+              <span v-else>{{ scope.row.exp }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="商品状态">
+            <template #default="scope">
+              <el-select v-if="editIndex === scope.$index" v-model="scope.row.status" placeholder="商品状态">
+                <el-option label="已上架" value="已上架"></el-option>
+                <el-option label="已下架" value="已下架"></el-option>
+                <el-option label="缺货" value="缺货"></el-option>
+              </el-select>
+              <span v-else>{{ scope.row.status }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="tag" label="商品标签">
+            <template #default="scope">
+              <el-select v-if="editIndex === scope.$index" v-model="scope.row.tag" placeholder="商品标签">
+                <el-option label="热销中" value="热销中"></el-option>
+                <el-option label="打折促销" value="打折促销"></el-option>
+                <el-option label="库存紧张" value="库存紧张"></el-option>
+                <el-option label="即将售罄" value="即将售罄"></el-option>
+              </el-select>
+              <span v-else>{{ scope.row.tag }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button v-if="editIndex !== scope.$index" @click="editRow(scope.$index)"
+                class="edit-btn">编辑</el-button>
+              <el-button v-else type="primary" @click="saveRow(scope.$index)" class="save-btn">确认</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
@@ -79,12 +169,13 @@ export default {
       productName: "",
       productType: "",
       productionDate: "",
-      manufacturer: "",
+      support: "",
       expirationDate: "",
       isSelected: true,
       tableData: [] as TableData[],
       editIndex: -1,
-      commoditytableData: []
+      commoditytableData: [],
+      message: ''
     };
   },
   created() {
@@ -93,27 +184,36 @@ export default {
   methods: {
     fetchData() {
       this.productName = this.productName.split(/[\t\r\f\n\s]+/g).join('');
-      if (this.productName != "") {
-        axios.get('/api/products', {
-          params: {
-            productName: this.productName
-          }
+      this.support = this.support.split(/[\t\r\f\n\s]+/g).join('');
+      if (this.productName != "" || this.productType != '' || this.productionDate != '' || this.expirationDate != '' || this.support != '') {
+        axios.post('/api/select-commodities', {
+          commodity_name: this.productName,
+          type: this.productType,
+          mfd: this.productionDate,
+          exp: this.expirationDate,
+          support: this.support
         }).then(response => {
-          if (response.data.code == 200) {
-            ElMessage.success(response.data.msg);
-            this.tableData = response.data.Data;
+          if (response.data.code === 200) {
+            ElMessage.success("查询成功");
+            this.message = response.data.message;
+            this.tableData = response.data.data;
+            this.productName = '';
+            this.productType = '';
+            this.productionDate = '';
+            this.expirationDate = '';
+            this.support = '';
             setTimeout(() => {
               this.isSelected = false;
             }, 500);
           } else {
-            ElMessage.error(response.data.msg);
+            ElMessage.error(response.data.message);
           }
         }).catch(error => {
           console.log(error);
           ElMessage.error("请求失败");
         });
       } else {
-        ElMessage.error("商品名不能为空");
+        ElMessage.error("请输入商品信息进行查询");
       }
     },
     back() {
@@ -124,7 +224,6 @@ export default {
     },
     saveRow(index: number) {
       const productData = this.tableData[index];
-
       axios.get('/api/save-product', {
         params: {
           product_id: productData.product_id,

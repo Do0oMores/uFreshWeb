@@ -41,11 +41,11 @@
         </el-button>
         <div class="table-container">
             <el-table :data="tableData" stripe style="width: 100%">
-                <el-table-column prop="id" label="ID">
+                <!-- <el-table-column prop="id" label="ID">
                     <template #default="scope">
                         <span>{{ scope.row.user_id }}</span>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column prop="name" label="姓名">
                     <template #default="scope">
                         <el-input v-if="editIndex === scope.$index" v-model="scope.row.user_name"
