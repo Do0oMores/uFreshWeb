@@ -25,7 +25,7 @@
         </el-row>
 
         <div class="table-container" v-if="isSelected">
-            <el-table :data="usertableData" stripe style="width: 100%">
+            <el-table :data="ordertableData" stripe style="width: 100%">
                 <el-table-column prop="order_id" label="订单号" />
                 <el-table-column prop="user_name" label="用户名" />
                 <el-table-column prop="status" label="订单状态" />
@@ -94,12 +94,11 @@ import axios from 'axios';
 import { ElMessage } from "element-plus";
 
 interface TableData {
-    user_id: string;
+    order_id: string;
     user_name: string;
-    email: string;
-    phone: string;
-    admin_enabled: string;
-    register_time: string;
+    status: string;
+    total_price: string;
+    created_time: string;
 }
 
 export default {
@@ -109,7 +108,7 @@ export default {
             username: "",
             tableData: [] as TableData[],
             editIndex: -1,
-            usertableData: [],
+            ordertableData: [],
             email: "",
             phone: '',
             register_time: '',
@@ -117,13 +116,14 @@ export default {
             status: ''
         }
     },
+    created() {
+        this.fetchOrders();
+    },
     methods: {
-        fetchData() {
-            axios.get('/api/orders').then(response => {
-                console.log(response.data);
+        fetchOrders() {
+            axios.post('/api/fetch-orders').then(response => {
                 if (response.data.code == 200) {
-                    this.tableData = response.data.Data;
-                    console.log(this.tableData);
+                    this.ordertableData = response.data.data;
                 } else {
                     ElMessage.error(response.data.msg)
                 }
@@ -135,26 +135,32 @@ export default {
         back() {
             this.isSelected = true
         },
-        saveRow(index: number) {
-            const userData = this.tableData[index];
-            axios.post('/api/admin-edit-order', {
-                user_id: userData.user_id,
-                user_name: userData.user_name,
-                email: userData.email,
-                phone: userData.phone,
-                admin_enabled: userData.admin_enabled,
-                register_time: userData.register_time
-            }).then(response => {
-                if (response.data.code == 200) {
-                    ElMessage.success(response.data.message);
-                    this.editIndex = -1;
-                } else {
-                    ElMessage.error(response.data.message);
-                }
-            }).catch(error => {
-                console.log(error);
-                ElMessage.error("请求失败");
-            });
+        // saveRow(index: number) {
+        //     const userData = this.tableData[index];
+        //     axios.post('/api/admin-edit-order', {
+        //         user_id: userData.user_id,
+        //         user_name: userData.user_name,
+        //         email: userData.email,
+        //         phone: userData.phone,
+        //         admin_enabled: userData.admin_enabled,
+        //         register_time: userData.register_time
+        //     }).then(response => {
+        //         if (response.data.code == 200) {
+        //             ElMessage.success(response.data.message);
+        //             this.editIndex = -1;
+        //         } else {
+        //             ElMessage.error(response.data.message);
+        //         }
+        //     }).catch(error => {
+        //         console.log(error);
+        //         ElMessage.error("请求失败");
+        //     });
+        // },
+        saveRow(index: number){
+
+        },
+        fetchData(){
+
         }
     }
 }
