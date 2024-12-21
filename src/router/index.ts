@@ -48,9 +48,9 @@ const router = createRouter({
           component: () => import('../components/AdminComponents/CommodityManage.vue')
         },
         {
-          path: 'printconsumptionorders',
-          name: 'printconsumptionorders',
-          component: () => import('../components/AdminComponents/PrintConsumptionOrders.vue')
+          path: 'ordermanage',
+          name: 'ordermanage',
+          component: () => import('../components/AdminComponents/OrderManage.vue')
         },
         {
           path: 'reservation',

@@ -36,8 +36,8 @@
 
     <el-row class="button-group">
       <el-button type="primary" @click="addProduct()">新增</el-button>
-      <el-button type="warning">修改</el-button>
-      <el-button type="success">提交</el-button>
+      <!-- <el-button type="warning">修改</el-button>
+      <el-button type="success">提交</el-button> -->
     </el-row>
 
     <div v-if="isSelected" class="table-container">
