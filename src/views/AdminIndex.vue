@@ -105,7 +105,7 @@ export default {
             if (key == "1") {
                 this.$router.push('/admin/usermanage')
             } else if (key == "2") {
-                this.$router.push('/admin/selectresidue')
+                this.$router.push('/admin/commoditymanage')
             } else if (key == "3") {
                 this.$router.push('/admin/printconsumptionorders')
             } else if (key == "4") {

@@ -43,9 +43,9 @@ const router = createRouter({
           component: () => import('../components/AdminComponents/UserManage.vue')
         },
         {
-          path: 'selectresidue',
-          name: 'selectresidue',
-          component: () => import('../components/AdminComponents/SelectCommodity.vue')
+          path: 'commoditymanage',
+          name: 'commoditymanage',
+          component: () => import('../components/AdminComponents/CommodityManage.vue')
         },
         {
           path: 'printconsumptionorders',
