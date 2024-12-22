@@ -109,7 +109,7 @@ export default {
             } else if (key == "3") {
                 this.$router.push('/admin/ordermanage')
             } else if (key == "4") {
-                this.$router.push('/admin/reservation')
+                this.$router.push('/admin/aftersalesmanage')
             }
         },
         handleCommand(command: string | number | object) {

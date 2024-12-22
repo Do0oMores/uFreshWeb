@@ -1,21 +1,25 @@
 <template>
     <div class="container">
-        <h2 class="title">订单管理</h2>
+        <h2 class="title">售后订单管理</h2>
         <el-row :gutter="20" class="search-bar">
             <el-col :span="4">
                 <el-input v-model="username" placeholder="请输入订单号" clearable></el-input>
             </el-col>
 
             <el-col :span="4">
-                <el-input v-model="email" placeholder="请输入用户名" clearable></el-input>
+                <el-select v-model="status" placeholder="请选择售后类型" clearable>
+                    <el-option label="退货" value="退货"></el-option>
+                    <el-option label="换货" value="换货"></el-option>
+                    <el-option label="退款" value="退款"></el-option>
+                </el-select>
             </el-col>
 
             <el-col :span="4">
-                <el-select v-model="status" placeholder="请选择订单状态" clearable>
-                    <el-option label="待处理" value="待处理"></el-option>
-                    <el-option label="已确认" value="已确认"></el-option>
+                <el-select v-model="status" placeholder="请选择售后进度" clearable>
+                    <el-option label="已提交申请" value="已提交申请"></el-option>
+                    <el-option label="审核中" value="审核中"></el-option>
+                    <el-option label="处理中" value="处理中"></el-option>
                     <el-option label="已完成" value="已完成"></el-option>
-                    <el-option label="已取消" value="已取消"></el-option>
                 </el-select>
             </el-col>
 
@@ -26,11 +30,12 @@
 
         <div class="table-container" v-if="isSelected">
             <el-table :data="ordertableData" stripe style="width: 100%">
+                <el-table-column prop="after_sales_id" label="售后订单号" />
                 <el-table-column prop="order_id" label="订单号" />
-                <el-table-column prop="user_name" label="用户名" />
-                <el-table-column prop="status" label="订单状态" />
-                <el-table-column prop="total_price" label="总价" />
-                <el-table-column prop="created_time" label="创建时间" />
+                <el-table-column prop="service_type" label="售后类型" />
+                <el-table-column prop="reasons" label="售后原因" />
+                <el-table-column prop="image" label="图片" />
+                <el-table-column prop="progress" label="售后进度" />
             </el-table>
         </div>
     </div>
@@ -102,7 +107,7 @@ interface TableData {
 }
 
 export default {
-    data: function () {
+    data() {
         return {
             isSelected: true,
             username: "",
@@ -117,51 +122,48 @@ export default {
         }
     },
     created() {
-        this.fetchOrders();
+        this.fetchData();
     },
     methods: {
-        fetchOrders() {
-            axios.post('/api/fetch-orders').then(response => {
+        fetchData() {
+            axios.post('/api/fetch-aftersales').then(response => {
                 if (response.data.code == 200) {
-                    this.ordertableData = response.data.data;
+                    this.tableData = response.data.data;
                 } else {
-                    ElMessage.error(response.data.message)
+                    ElMessage.error(response.data.message);
                 }
-            }).catch()
+            }).catch(error => {
+                console.log(error);
+                ElMessage.error("服务器错误，请求失败");
+            });
         },
-        editRow(index: number) {
-            this.editIndex = index;
+        changeStatus(row: any) {
+            axios.get('/api/update-reservation-status', {
+                params: {
+                    reservation_id: row.reservation_id,
+                    status: row.status
+                }
+            }).then(response => {
+                if (response.data.code == 200) {
+                    ElMessage.success(response.data.msg);
+                    row.status = response.data.status;
+                } else {
+                    ElMessage.error(response.data.msg);
+                }
+            }).catch(error => {
+                console.log(error);
+                ElMessage.error("请求失败");
+            });
         },
         back() {
             this.isSelected = true
         },
-        // saveRow(index: number) {
-        //     const userData = this.tableData[index];
-        //     axios.post('/api/admin-edit-order', {
-        //         user_id: userData.user_id,
-        //         user_name: userData.user_name,
-        //         email: userData.email,
-        //         phone: userData.phone,
-        //         admin_enabled: userData.admin_enabled,
-        //         register_time: userData.register_time
-        //     }).then(response => {
-        //         if (response.data.code == 200) {
-        //             ElMessage.success(response.data.message);
-        //             this.editIndex = -1;
-        //         } else {
-        //             ElMessage.error(response.data.message);
-        //         }
-        //     }).catch(error => {
-        //         console.log(error);
-        //         ElMessage.error("请求失败");
-        //     });
-        // },
-        saveRow(index: number){
+        editRow(index: number) {
+            this.editIndex = index;
+        },
+        saveRow(index: number) {
 
         },
-        fetchData(){
-
-        }
     }
 }
 </script>

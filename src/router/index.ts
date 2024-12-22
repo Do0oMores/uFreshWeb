@@ -53,9 +53,9 @@ const router = createRouter({
           component: () => import('../components/AdminComponents/OrderManage.vue')
         },
         {
-          path: 'reservation',
-          name: 'reservation',
-          component: () => import('../components/AdminComponents/Reservation.vue')
+          path: 'aftersalesmanage',
+          name: 'aftersalesmanage',
+          component: () => import('../components/AdminComponents/AfterSalesManage.vue')
         },
         {
           path: 'addcommodity',
