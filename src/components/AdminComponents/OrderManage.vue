@@ -3,11 +3,11 @@
         <h2 class="title">订单管理</h2>
         <el-row :gutter="20" class="search-bar">
             <el-col :span="4">
-                <el-input v-model="username" placeholder="请输入订单号" clearable></el-input>
+                <el-input v-model="orderId" placeholder="请输入订单号" clearable></el-input>
             </el-col>
 
             <el-col :span="4">
-                <el-input v-model="email" placeholder="请输入用户名" clearable></el-input>
+                <el-input v-model="username" placeholder="请输入用户名" clearable></el-input>
             </el-col>
 
             <el-col :span="4">
@@ -20,7 +20,7 @@
             </el-col>
 
             <el-col :span="2" class="search-actions">
-                <el-button type="primary" @click="fetchData()">查询</el-button>
+                <el-button type="primary" @click="selectOrders()">查询</el-button>
             </el-col>
         </el-row>
 
@@ -41,40 +41,37 @@
         </el-button>
         <div class="table-container">
             <el-table :data="tableData" stripe style="width: 100%">
-                <el-table-column prop="name" label="姓名">
+                <el-table-column prop="order_id" label="订单ID">
+                    <template #default="scope">
+                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.order_id"
+                            placeholder="订单ID"></el-input>
+                        <span v-else>{{ scope.row.order_id }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="user_name" label="用户名">
                     <template #default="scope">
                         <el-input v-if="editIndex === scope.$index" v-model="scope.row.user_name"
-                            placeholder="姓名"></el-input>
+                            placeholder="用户名"></el-input>
                         <span v-else>{{ scope.row.user_name }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="email" label="电子邮件">
+                <el-table-column prop="total_price" label="总价">
                     <template #default="scope">
-                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.email"
-                            placeholder="电子邮件"></el-input>
-                        <span v-else>{{ scope.row.email }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="phone" label="电话">
-                    <template #default="scope">
-                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.phone"
+                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.total_price"
                             placeholder="电话"></el-input>
-                        <span v-else>{{ scope.row.phone }}</span>
+                        <span v-else>{{ scope.row.total_price }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="is_admin" label="是否为管理员">
+                <el-table-column prop="status" label="订单状态">
                     <template #default="scope">
-                        <el-select v-if="editIndex === scope.$index" v-model="scope.row.admin_enabled"
-                            placeholder="是否为管理员">
-                            <el-option label="是" value="true"></el-option>
-                            <el-option label="否" value="false"></el-option>
-                        </el-select>
-                        <span v-else>{{ scope.row.admin_enabled }}</span>
+                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.status"
+                            placeholder="订单状态"></el-input>
+                        <span v-else>{{ scope.row.status }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="register_time" label="注册日期">
+                <el-table-column prop="created_time" label="创建时间">
                     <template #default="scope">
-                        <span>{{ scope.row.register_time }}</span>
+                        <span>{{ scope.row.created_time }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作">
@@ -113,7 +110,8 @@ export default {
             phone: '',
             register_time: '',
             message: '',
-            status: ''
+            status: '',
+            orderId:''
         }
     },
     created() {
@@ -159,8 +157,35 @@ export default {
         saveRow(index: number){
 
         },
-        fetchData(){
-
+        selectOrders(){
+            this.orderId=this.orderId.split(/[\t\r\f\n\s]+/g).join('');
+            this.username=this.username.split(/[\t\r\f\n\s]+/g).join('');
+            if(this.orderId!=''||this.username!=''||this.status!=''){
+                axios.post("/api/select_orders",{
+                    order_id:this.orderId,
+                    user_name:this.username,
+                    status:this.status
+                }).then(response=>{
+                    if(response.data.code==200){
+                        ElMessage.success("查询成功");
+                        this.message=response.data.message;
+                        this.tableData=response.data.data;
+                        this.orderId='';
+                        this.username='';
+                        this.status='';
+                        setTimeout(()=>{
+                            this.isSelected = false;
+                        },500);
+                    }else{
+                        ElMessage.error(response.data.message);
+                    }
+                }).catch(error=>{
+                    console.log(error);
+                    ElMessage.error("请求失败");
+                })
+            }else{
+                ElMessage.error("请输入订单信息进行查询");
+            }
         }
     }
 }
