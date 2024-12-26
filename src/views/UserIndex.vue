@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-container style="height: 100vh;">
-      <!-- 侧边栏 -->
       <el-aside
         :style="{ width: isSidebarVisible ? (isCollapsed ? '64px' : '220px') : '0px', transition: 'width 0.3s' }"
         class="sidebar" :class="{ collapsed: isCollapsed }">
@@ -45,11 +44,8 @@
         </el-menu>
       </el-aside>
 
-      <!-- 主容器 -->
       <el-container>
-        <!-- 顶部导航 -->
         <el-header class="header">
-          <!-- 侧边栏切换按钮 -->
           <el-button type="primary" @click="toggleSidebarVisibility" class="toggle-btn">
             <el-icon>
               <IconMenu />
@@ -76,7 +72,6 @@
           </div>
         </el-header>
 
-        <!-- 主内容区 -->
         <el-main class="main-content">
           <router-view></router-view>
         </el-main>
@@ -138,7 +133,7 @@ export default {
     },
     handleCommand(command) {
       if (command == "quit") {
-        ElMessage.success("您已成功退出系统")
+        ElMessage.success("您已退出登录")
         setTimeout(() => {
           this.$router.push('/login')
         }, 1000);
@@ -186,7 +181,6 @@ body {
   object-fit: contain;
 }
 
-/* 侧边栏样式 */
 .sidebar {
   background-color: #1f2937;
   color: #fff;
@@ -205,7 +199,6 @@ body {
   display: none;
 }
 
-/* 顶部导航样式 */
 .header {
   background-color: #1f2937;
   display: flex;
@@ -240,7 +233,6 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* 主内容区样式 */
 .main-content {
   padding: 20px;
   background-color: rgba(255, 255, 255, 0.95);

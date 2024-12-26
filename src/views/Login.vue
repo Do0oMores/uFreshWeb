@@ -1,6 +1,7 @@
 <template>
 	<div class="container">
 		<div class="login-wrapper">
+			<div class="header">优鲜</div>
 			<div class="gif-wrapper">
 				<img src="../pic/login.gif" alt="Login Animation" class="login-gif" />
 			</div>

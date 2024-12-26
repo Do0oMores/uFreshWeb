@@ -5,7 +5,7 @@
         </div>
 
         <div class="product-info">
-            <h1 class="product-name">{{ product.name }}</h1>
+            <h1 class="product-name">{{ product.commodity_name }}</h1>
 
             <div class="product-price">
                 <span class="current-price">￥{{ product.price }}</span>
@@ -24,7 +24,7 @@
                     <el-button-group>
                         <el-button v-for="(spec, index) in product.specs" :key="index" size="small"
                             :type="selectedSpec === spec.spec_value ? 'primary' : 'default'" @click="selectSpec(spec)">
-                            {{ spec.spec_name }} : {{ spec.spec_value }}
+                            {{ spec.spec_name }}: {{ spec.spec_value }}
                         </el-button>
                     </el-button-group>
                 </h3>
@@ -54,6 +54,7 @@ export default {
             selectedSpec: null,
             quantity: 1,
             commodityId: null,
+            selectedSpecId: null,
         };
     },
     created() {
@@ -93,6 +94,7 @@ export default {
         },
         selectSpec(spec) {
             this.selectedSpec = spec;
+            this.selectedSpecId = spec.id;
         },
         decreaseQuantity() {
             if (this.quantity > 1) this.quantity--;
@@ -102,14 +104,30 @@ export default {
         },
         addToCart() {
             if (!this.selectedSpec) {
-                alert("请选择规格！");
+                ElMessage.error("请选择规格！");
                 return;
             }
-            alert(`已加入购物车：${this.product.name}，规格：${this.selectedSpec}，数量：${this.quantity}`);
+            try{
+                axios.post('/api/add-to-cart', {
+                    user_id: sessionStorage.getItem('userID'),
+                    commodity_id: this.commodityId,
+                    spec_id: this.selectedSpecId,
+                    quantity: this.quantity
+                }).then(response => {
+                    if (response.data.code === 200) {
+                        ElMessage.success(response.data.message);
+                    } else {
+                        ElMessage.error(response.data.message);
+                    }
+                });
+            } catch (error) {
+                ElMessage.error("加入购物车失败");
+            }
+            // alert(`已加入购物车：${this.product.commodity_name}，规格：${this.selectedSpecId}，数量：${this.quantity}`);
         },
         buyNow() {
             if (!this.selectedSpec) {
-                alert("请选择规格！");
+                ElMessage.error("请选择规格！");
                 return;
             }
             alert(`立即购买：${this.product.name}，规格：${this.selectedSpec}，数量：${this.quantity}`);
