@@ -104,7 +104,7 @@ const router = createRouter({
           component: () => import('../components/UserComponents/UserInformation.vue')
         },
         {
-          path: 'commoditydetils',
+          path: 'commoditydetails/:commodityId',
           name: 'commoditydetils',
           component: () => import('../components/UserComponents/CommodityDetail.vue')
         }

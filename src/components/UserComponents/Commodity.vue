@@ -2,12 +2,14 @@
   <el-main>
     <el-carousel :interval="5000" arrow="always" style="margin-bottom: 20px;">
       <el-carousel-item v-for="(product, index) in products" :key="product.commodity_id">
-        <img :src="'http://localhost:8081' + product.image" alt="product.name" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;" />
+        <img :src="'http://localhost:8081' + product.image" alt="product.name"
+          style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;" />
       </el-carousel-item>
     </el-carousel>
 
     <div class="products">
-      <div class="product" v-for="product in products" :key="product.commodity_id">
+      <div class="product" v-for="product in products" :key="product.commodity_id"
+        @click="goToCommodityDetail(product.commodity_id)">
         <img :src="'http://localhost:8081' + product.image" class="product-image" />
         <p class="product-name">{{ product.commodity_name }}</p>
         <div class="product-tags">
@@ -45,55 +47,59 @@ export default {
         ElMessage.error(response.data.msg)
       }
     },
-    async addToCart(productId) {
-      if (!this.userId) {
-        ElMessage.error('您还未登录!');
-        return;
-      }
-      try {
-        const response = await axios.get('/api/add-to-cart', {
-          params: {
-            userId: this.userId,
-            productId: productId,
-            quantity: 1
-          }
-        });
-        if (response.data.code == 200) {
-          ElMessage.success(response.data.msg);
-        } else {
-          ElMessage.error(response.data.msg);
-        }
-      } catch (error) {
-        console.log(error);
-        ElMessage.error('添加到购物车失败!');
-      }
-    },
+    // async addToCart(productId) {
+    //   if (!this.userId) {
+    //     ElMessage.error('您还未登录!');
+    //     return;
+    //   }
+    //   try {
+    //     const response = await axios.get('/api/add-to-cart', {
+    //       params: {
+    //         userId: this.userId,
+    //         productId: productId,
+    //         quantity: 1
+    //       }
+    //     });
+    //     if (response.data.code == 200) {
+    //       ElMessage.success(response.data.msg);
+    //     } else {
+    //       ElMessage.error(response.data.msg);
+    //     }
+    //   } catch (error) {
+    //     console.log(error);
+    //     ElMessage.error('添加到购物车失败!');
+    //   }
+    // },
     getUserId() {
       return sessionStorage.getItem('userID') || null;
     },
-    async Reservation(product_id) {
-      if (!this.userId) {
-        ElMessage.error('您还未登录');
-        return;
-      }
-      try {
-        const response = await axios.get('/api/add-reservation', {
-          params: {
-            userID: this.userId,
-            productID: product_id,
-            amount: 1
-          }
-        });
-        if (response.data.code === 200) {
-          ElMessage.success(response.data.msg);
-        } else {
-          ElMessage.error(response.data.msg);
-        }
-      } catch (error) {
-        ElMessage.error('添加到预约失败')
-      }
+    // async Reservation(product_id) {
+    //   if (!this.userId) {
+    //     ElMessage.error('您还未登录');
+    //     return;
+    //   }
+    //   try {
+    //     const response = await axios.get('/api/add-reservation', {
+    //       params: {
+    //         userID: this.userId,
+    //         productID: product_id,
+    //         amount: 1
+    //       }
+    //     });
+    //     if (response.data.code === 200) {
+    //       ElMessage.success(response.data.msg);
+    //     } else {
+    //       ElMessage.error(response.data.msg);
+    //     }
+    //   } catch (error) {
+    //     ElMessage.error('添加到预约失败')
+    //   }
+    // },
+    goToCommodityDetail(commodityId) {
+      console.log(commodityId);
+      this.$router.push({ name: 'commoditydetils', params: { commodityId } });
     }
-  },
+  }
 };
 </script>
 
