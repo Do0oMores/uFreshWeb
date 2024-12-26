@@ -20,11 +20,14 @@
             </div>
 
             <div class="product-specs">
-                <h3>规格：<el-button-group>
+                <h3>规格：
+                    <el-button-group>
                         <el-button v-for="(spec, index) in product.specs" :key="index" size="small"
-                            :type="selectedSpec === spec ? 'primary' : 'default'" @click="selectSpec(spec)">{{ spec
-                            }}</el-button>
-                    </el-button-group></h3>
+                            :type="selectedSpec === spec.spec_value ? 'primary' : 'default'" @click="selectSpec(spec)">
+                            {{ spec.spec_name }} : {{ spec.spec_value }}
+                        </el-button>
+                    </el-button-group>
+                </h3>
             </div>
 
             <div class="product-quantity">
@@ -56,22 +59,35 @@ export default {
     created() {
         this.commodityId = this.$route.params.commodityId;
         this.fetchProductData();
+        this.fetchCommoditySpec();
     },
     methods: {
         async fetchProductData() {
-            console.log(this.commodityId);
             try {
                 const response = await axios.post('/api/fetch-commodity-detail', {
                     commodity_id: this.commodityId
                 });
                 if (response.data.code == 200) {
                     this.product = response.data.data;
-                    console.log(response.data.data);
                 } else {
                     ElMessage.error('获取商品详情失败！');
                 }
             } catch (error) {
-                console.log(error);
+                ElMessage.error('请求失败');
+            }
+        },
+        async fetchCommoditySpec() {
+            try {
+                const response = await axios.post('/api/fetch-commodity-spec', {
+                    commodity_id: this.commodityId
+                });
+                if (response.data.code == 200) {
+                    this.product.specs = response.data.data;
+                    console.log(this.product.specs);
+                } else {
+                    ElMessage.error('获取商品规格失败！');
+                }
+            } catch (error) {
                 ElMessage.error('请求失败');
             }
         },
@@ -262,16 +278,16 @@ export default {
 }
 
 .product-tags {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .product-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  margin-right: 5px;
-  font-size: 0.9em;
-  color: white;
-  background-color: #ff5722;
-  border-radius: 4px;
+    display: inline-block;
+    padding: 2px 8px;
+    margin-right: 5px;
+    font-size: 0.9em;
+    color: white;
+    background-color: #ff5722;
+    border-radius: 4px;
 }
 </style>
