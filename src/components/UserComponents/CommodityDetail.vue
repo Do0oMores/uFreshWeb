@@ -123,7 +123,6 @@ export default {
             } catch (error) {
                 ElMessage.error("加入购物车失败");
             }
-            // alert(`已加入购物车：${this.product.commodity_name}，规格：${this.selectedSpecId}，数量：${this.quantity}`);
         },
         buyNow() {
             if (!this.selectedSpec) {

@@ -12,19 +12,15 @@
             <div class="cart-item" v-for="(item, index) in cartItems" :key="index">
                 <input type="checkbox" v-model="item.selected" class="item-checkbox" />
                 <div class="item-image">
-                    <img :src="item.image" alt="商品图片" />
+                    <img :src="'http://localhost:8081' + item.image" alt="商品图片" />
                 </div>
                 <div class="item-details">
                     <h3 class="item-name">{{ item.name }}</h3>
-                    <select v-model="item.option" class="item-options">
-                        <option v-for="(option, i) in item.options" :key="i" :value="option">
-                            {{ option }}
-                        </option>
-                    </select>
-                    <p class="item-tag">🔥 火爆热销</p>
+                    <el-button class="spec">{{ item.spec_name }} : {{ item.spec_value }}</el-button>
+                    <p class="item-tag">{{ item.tag }}</p>
                     <p class="item-price">¥ {{ item.price }}</p>
                 </div>
-                <div class="item-quantity">x{{ item.quantity }}</div>
+                <div class="item-quantity">x{{ item.amount }}</div>
             </div>
         </main>
 
@@ -47,7 +43,7 @@ import { ElMessage } from 'element-plus';
 export default {
     data() {
         return {
-            products: [],
+            cartItems:[],
             totalCartPrice: 0,
             userId: null,
             isSelected: true,
@@ -65,128 +61,22 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await axios.get('/api/show-shopping', {
-                    params: {
-                        userID: this.userId
-                    }
+                const response = await axios.post('/api/fetch-cart', {
+                        user_id: this.userId
                 });
                 if (response.data.code === 200) {
-                    this.products = response.data.Data.items;
-                    this.totalCartPrice = response.data.Data.totalCartPrice;
+                    this.cartItems = response.data.data;
+                    console.log(this.item);
                 } else {
-                    ElMessage.error(response.data.msg);
+                    ElMessage.error(response.data.message);
                 }
             } catch (error) {
+                console.log(error);
                 ElMessage.error('获取数据失败，请稍后再试');
             }
         },
         getUserId() {
             return sessionStorage.getItem('userID') || null;
-        },
-        async decreaseQuantity(product_id) {
-            try {
-                const response = await axios.get('/api/remove-from-cart', {
-                    params: {
-                        userId: this.userId,
-                        productId: product_id,
-                        quantity: 1
-                    }
-                });
-                if (response.data.code === 200) {
-                    const product = this.products.find(p => p.productID === product_id);
-                    if (product && product.quantity > 0) {
-                        product.quantity -= 1;
-                        product.totalPrice = (product.unitPrice * product.quantity).toFixed(2);
-                        this.totalCartPrice = this.calculateTotalCartPrice();
-                    }
-                    if (product.quantity === 0) {
-                        this.products = this.products.filter(p => p.productID !== product_id);
-                    }
-                    ElMessage.success(response.data.msg);
-                } else {
-                    ElMessage.error(response.data.msg);
-                }
-            } catch (error) {
-                ElMessage.error('获取信息失败，请稍后再试');
-            }
-        },
-        async increaseQuantity(product_id) {
-            try {
-                const response = await axios.get('/api/add-to-cart', {
-                    params: {
-                        userId: this.userId,
-                        productId: product_id,
-                        quantity: 1
-                    }
-                });
-                if (response.data.code === 200) {
-                    const product = this.products.find(p => p.productID === product_id);
-                    if (product) {
-                        product.quantity += 1;
-                        product.totalPrice = (product.unitPrice * product.quantity).toFixed(2);
-                        this.totalCartPrice = this.calculateTotalCartPrice();
-                    }
-                    ElMessage.success(response.data.msg);
-                } else {
-                    ElMessage.error(response.data.msg);
-                }
-            } catch (error) {
-                ElMessage.error('获取信息失败，请稍后再试');
-            }
-        },
-        calculateTotalCartPrice() {
-            return this.products.reduce((total, product) => total + parseFloat(product.totalPrice), 0).toFixed(2);
-        },
-        async createOrder() {
-            try {
-                const response = await axios.get('/api/create-order', {
-                    params: {
-                        UserID: this.userId
-                    }
-                });
-                if (response.data.code === 200) {
-                    ElMessage.success(response.data.msg);
-                    this.tableData = response.data.Data;
-                    setTimeout(() => {
-                        this.isSelected = false;
-                    }, 500);
-                } else {
-                    ElMessage.error(response.data.msg);
-                }
-            } catch (error) {
-                ElMessage.error('服务器错误，请稍后再试');
-            }
-        },
-        async checkout() {
-            try {
-                const response = await axios.get('/api/checkout', {
-                    params: {
-                        UserID: this.userId
-                    }
-                });
-                if (response.data.code === 200) {
-                    ElMessage.success(response.data.msg);
-                } else {
-                    ElMessage.error(response.data.msg);
-                }
-            } catch (error) {
-                ElMessage.error('服务器错误，请稍后再试');
-            }
-        },
-        async back() {
-            try {
-                const response = await axios.get('/api/cleanorders', {
-                    params: {
-                        userID: this.userId
-                    }
-                });
-                if (!response.data.code === 200) {
-                    ElMessage.error(response.data.msg);
-                }
-            } catch (error) {
-                ElMessage.error('服务器错误，请稍后再试')
-            }
-            this.isSelected = true
         }
     }
 }
