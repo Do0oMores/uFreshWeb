@@ -89,6 +89,7 @@ export default {
                     ElMessage.error('获取商品规格失败！');
                 }
             } catch (error) {
+                console.log(error);
                 ElMessage.error('请求失败');
             }
         },
@@ -112,7 +113,7 @@ export default {
                     user_id: sessionStorage.getItem('userID'),
                     commodity_id: this.commodityId,
                     spec_id: this.selectedSpecId,
-                    quantity: this.quantity
+                    amount: this.quantity
                 }).then(response => {
                     if (response.data.code === 200) {
                         ElMessage.success(response.data.message);

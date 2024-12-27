@@ -47,54 +47,9 @@ export default {
         ElMessage.error(response.data.msg)
       }
     },
-    // async addToCart(productId) {
-    //   if (!this.userId) {
-    //     ElMessage.error('您还未登录!');
-    //     return;
-    //   }
-    //   try {
-    //     const response = await axios.get('/api/add-to-cart', {
-    //       params: {
-    //         userId: this.userId,
-    //         productId: productId,
-    //         quantity: 1
-    //       }
-    //     });
-    //     if (response.data.code == 200) {
-    //       ElMessage.success(response.data.msg);
-    //     } else {
-    //       ElMessage.error(response.data.msg);
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //     ElMessage.error('添加到购物车失败!');
-    //   }
-    // },
     getUserId() {
       return sessionStorage.getItem('userID') || null;
     },
-    // async Reservation(product_id) {
-    //   if (!this.userId) {
-    //     ElMessage.error('您还未登录');
-    //     return;
-    //   }
-    //   try {
-    //     const response = await axios.get('/api/add-reservation', {
-    //       params: {
-    //         userID: this.userId,
-    //         productID: product_id,
-    //         amount: 1
-    //       }
-    //     });
-    //     if (response.data.code === 200) {
-    //       ElMessage.success(response.data.msg);
-    //     } else {
-    //       ElMessage.error(response.data.msg);
-    //     }
-    //   } catch (error) {
-    //     ElMessage.error('添加到预约失败')
-    //   }
-    // },
     goToCommodityDetail(commodityId) {
       console.log(commodityId);
       this.$router.push({ name: 'commoditydetils', params: { commodityId } });
