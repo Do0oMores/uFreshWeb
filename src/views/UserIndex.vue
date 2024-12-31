@@ -25,12 +25,12 @@
               <span v-if="!isCollapsed">购物车</span>
             </el-menu-item>
           </el-tooltip>
-          <el-tooltip content="预约" placement="right">
+          <el-tooltip content="我的订单" placement="right">
             <el-menu-item index="3">
               <el-icon>
                 <Setting />
               </el-icon>
-              <span v-if="!isCollapsed">预约</span>
+              <span v-if="!isCollapsed">我的订单</span>
             </el-menu-item>
           </el-tooltip>
           <el-tooltip content="商品溯源" placement="right">
@@ -120,7 +120,7 @@ export default {
       } else if (key == "2") {
         this.$router.push('/user/shoppingcart')
       } else if (key == "3") {
-        this.$router.push('/user/userreservation')
+        this.$router.push('/user/myorders')
       } else if (key == "4") {
         this.$router.push('/user/commodityorigin')
       }
