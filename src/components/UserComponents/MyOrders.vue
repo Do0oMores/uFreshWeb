@@ -212,6 +212,13 @@ export default {
     margin-top: 20px;
 }
 
+.total{
+    font-size: 24px;
+    color: #e53935;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
 .action-buttons {
     display: flex;
     justify-content: space-between;
