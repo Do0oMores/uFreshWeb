@@ -69,12 +69,6 @@
       </el-button>
       <div class="table-container">
         <el-table :data="tableData" stripe style="width: 100%">
-          <el-table-column prop="commodity_id" label="商品ID">
-            <template #default="scope">
-              <span>{{ scope.row.commodity_id }}</span>
-            </template>
-          </el-table-column>
-
           <el-table-column prop="image" label="商品图片">
             <template #default="scope">
               <div v-if="editIndex === scope.$index">
