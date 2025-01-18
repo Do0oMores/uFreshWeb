@@ -111,9 +111,9 @@ import { ElMessage } from 'element-plus';
 export default {
     data() {
         return {
-            isEditingAvatar: false, // 控制头像编辑状态
-            isEditingProfileInfo: false, // 控制个人信息编辑状态
-            isEditingDeliveryInfo: false, // 控制配送信息编辑状态
+            isEditingAvatar: false,
+            isEditingProfileInfo: false,
+            isEditingDeliveryInfo: false, 
             avatarUrl: '',
             captcha: '',
             tableData: [],

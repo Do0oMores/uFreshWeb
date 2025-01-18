@@ -36,13 +36,17 @@
 
     <el-row class="button-group">
       <el-button type="primary" @click="addProduct()">新增</el-button>
-      <!-- <el-button type="warning">修改</el-button>
-      <el-button type="success">提交</el-button> -->
     </el-row>
 
     <div v-if="isSelected" class="table-container">
-      <el-table :data="commoditytableData" stripe style="width: 100%">
+      <el-table :data="currentPageData" stripe style="width: 100%">
         <el-table-column prop="commodity_id" label="商品ID" />
+        <el-table-column label="商品图片">
+          <template #default="{ row }">
+            <img :src="'http://localhost:8081' + row.image" alt="商品图片"
+              style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ccc; border-radius: 8px;" />
+          </template>
+        </el-table-column>
         <el-table-column prop="commodity_name" label="商品名" />
         <el-table-column prop="description" label="描述信息" />
         <el-table-column prop="type" label="类别" />
@@ -54,6 +58,9 @@
         <el-table-column prop="status" label="商品状态" />
         <el-table-column prop="tag" label="商品标签" />
       </el-table>
+      <el-pagination background layout="prev, pager, next, jumper, sizes" :page-size="pageSize"
+        :current-page="currentPage" :total="commoditytableData.length" @size-change="handleSizeChange"
+        @current-change="handlePageChange" />
     </div>
 
     <div v-if="!isSelected" class="container">
@@ -62,9 +69,28 @@
       </el-button>
       <div class="table-container">
         <el-table :data="tableData" stripe style="width: 100%">
+          <el-table-column prop="commodity_id" label="商品ID">
+            <template #default="scope">
+              <span>{{ scope.row.commodity_id }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="image" label="商品图片">
+            <template #default="scope">
+              <div v-if="editIndex === scope.$index">
+                <el-upload :auto-upload="false" :before-upload="beforeImageUpload"
+                  :on-change="uploadImage" show-file-list="false" name="file">
+                  <el-button type="primary" icon="el-icon-upload">上传图片</el-button>
+                </el-upload>
+              </div>
+              <img v-else :src="scope.row.image ? 'http://localhost:8081' + scope.row.image : ''" alt="商品图片"
+                style="width: 100px; height: 100px; object-fit: cover;" />
+            </template>
+          </el-table-column>
           <el-table-column prop="name" label="商品名">
             <template #default="scope">
-              <el-input v-if="editIndex === scope.$index" v-model="scope.row.user_name" placeholder="商品名"></el-input>
+              <el-input v-if="editIndex === scope.$index" v-model="scope.row.commodity_name"
+                placeholder="商品名"></el-input>
               <span v-else>{{ scope.row.commodity_name }}</span>
             </template>
           </el-table-column>
@@ -150,17 +176,17 @@ import axios from 'axios';
 import { ElMessage } from "element-plus";
 
 interface TableData {
-  product_id: string;
+  commodity_id: string;
   name: string;
   description: string;
   price: number;
-  stock: number;
-  origin: string;
-  production_date: string;
-  support: string;
-  create_time: string;
-  shelf_life: number;
+  inventory: number;
+  mfd: string;
+  exp: string;
+  status: string;
+  tag: string;
   type: string;
+  image: string;
 }
 
 export default {
@@ -175,8 +201,17 @@ export default {
       tableData: [] as TableData[],
       editIndex: -1,
       commoditytableData: [],
-      message: ''
+      message: '',
+      currentPage: 1,
+      pageSize: 10,
     };
+  },
+  computed: {
+    currentPageData() {
+      const start = (this.currentPage - 1) * this.pageSize;
+      const end = start + this.pageSize;
+      return this.commoditytableData.slice(start, end);
+    }
   },
   created() {
     this.fetchCommodities();
@@ -224,28 +259,25 @@ export default {
     },
     saveRow(index: number) {
       const productData = this.tableData[index];
-      axios.get('/api/save-product', {
-        params: {
-          product_id: productData.product_id,
-          name: productData.name,
-          description: productData.description,
-          price: productData.price,
-          stock: productData.stock,
-          origin: productData.origin,
-          product_date: productData.production_date,
-          support: productData.support,
-          create_time: productData.create_time,
-          shelf_life: productData.shelf_life,
-          type: productData.type
-        }
+      axios.post('/api/edit-commodity', {
+        commodity_id: productData.commodity_id,
+        commodity_name: productData.name,
+        description: productData.description,
+        price: productData.price,
+        type: productData.type,
+        inventory: productData.inventory,
+        mfd: productData.mfd,
+        exp: productData.exp,
+        status: productData.status,
+        tag: productData.tag,
       })
         .then(response => {
           if (response.data.code == 200) {
             ElMessage.success("编辑已保存");
-            this.editIndex = -1; // 退出编辑模式
           } else {
             ElMessage.error("保存失败：" + response.data.msg);
           }
+          this.editIndex = -1;
         })
         .catch(error => {
           console.log(error);
@@ -257,6 +289,7 @@ export default {
         const response = await axios.post("/api/fetch-commodities");
         if (response.data.code === 200) {
           this.commoditytableData = response.data.data;
+          console.log(this.commoditytableData);
         } else {
           ElMessage.error(response.data.message);
         }
@@ -265,6 +298,50 @@ export default {
       }
     }, addProduct() {
       router.push("/admin/addcommodity")
+    },
+    handlePageChange(page: number) {
+      this.currentPage = page;
+    },
+    handleSizeChange(size: number) {
+      this.pageSize = size;
+      this.currentPage = Math.min(this.currentPage, Math.ceil(this.commoditytableData.length / size));
+    },
+    async uploadImage(file: { raw: File }, row: TableData): Promise<void> {
+      try {
+        const formData = new FormData();
+        formData.append("file", file.raw);
+        formData.append("commodity_id", row.commodity_id);
+
+        console.log('FormData:', formData);
+        const response = await axios.post("/api/upload-commodity-image", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        });
+
+        if (response.data.success) {
+          row.image = response.data.url;
+          ElMessage.success("图片上传成功");
+        } else {
+          ElMessage.error("上传图片失败：" + response.data.msg);
+        }
+      } catch (error) {
+        ElMessage.error("上传图片发生错误");
+        console.error(error);
+      }
+    },
+    beforeImageUpload(file: File) {
+      const isJPG = file.type === 'image/jpeg';
+      const isPNG = file.type === 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG && !isPNG) {
+        ElMessage.error('上传格式只能是JPG PNG格式！');
+        return false; // 阻止上传
+      }
+      if (!isLt2M) {
+        ElMessage.error('上传头像图片大小不能超过2MB！');
+        return false; // 阻止上传
+      }
     }
   },
 };
