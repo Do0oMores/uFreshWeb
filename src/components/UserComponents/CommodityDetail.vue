@@ -24,7 +24,7 @@
                     <el-button-group>
                         <el-button v-for="(spec, index) in product.specs" :key="index" size="small"
                             :type="selectedSpec === spec.spec_value ? 'primary' : 'default'" @click="selectSpec(spec)">
-                            {{ spec.spec_name }}: {{ spec.spec_value }}
+                            {{ spec.spec }}
                         </el-button>
                     </el-button-group>
                 </h3>
