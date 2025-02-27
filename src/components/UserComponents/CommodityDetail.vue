@@ -8,7 +8,7 @@
             <h1 class="product-name">{{ product.commodity_name }}</h1>
 
             <div class="product-price">
-                <span class="current-price">￥{{ product.price }}</span>
+                <span class="current-price">￥{{ selectedSpec ? selectedSpec.price : product.price }}</span>
             </div>
 
             <div class="product-description">
@@ -23,7 +23,7 @@
                 <h3>规格：
                     <el-button-group>
                         <el-button v-for="(spec, index) in product.specs" :key="index" size="small"
-                            :type="selectedSpec === spec.spec_value ? 'primary' : 'default'" @click="selectSpec(spec)">
+                            :type="selectedSpec === spec ? 'primary' : 'default'" @click="selectSpec(spec)">
                             {{ spec.spec }}
                         </el-button>
                     </el-button-group>
@@ -84,7 +84,6 @@ export default {
                 });
                 if (response.data.code == 200) {
                     this.product.specs = response.data.data;
-                    console.log(this.product.specs);
                 } else {
                     ElMessage.error('获取商品规格失败！');
                 }
@@ -108,7 +107,7 @@ export default {
                 ElMessage.error("请选择规格！");
                 return;
             }
-            try{
+            try {
                 axios.post('/api/add-to-cart', {
                     user_id: sessionStorage.getItem('userID'),
                     commodity_id: this.commodityId,
@@ -130,7 +129,7 @@ export default {
                 ElMessage.error("请选择规格！");
                 return;
             }
-            alert(`立即购买：${this.product.name}，规格：${this.selectedSpec}，数量：${this.quantity}`);
+            alert(`立即购买：${this.product.commodity_name}，规格：${this.selectedSpec.spec}，数量：${this.quantity}`);
         },
     }
 };

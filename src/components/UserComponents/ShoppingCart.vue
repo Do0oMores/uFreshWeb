@@ -124,21 +124,16 @@ export default {
             // 提取选中的商品信息
             const itemsToCheckout = this.selectedItems.map(item => ({
                 productId: item.id,
-                specName: item.spec_name,
-                specValue: item.spec_value,
+                spec: item.spec,
                 quantity: item.amount,
             }));
 
             // 发送请求到后端
             try {
                 const response = await this.$axios.post('/api/checkout', { items: itemsToCheckout });
-
-                // 处理返回的结算结果
                 if (response.data.success) {
-                    // 显示成功信息或跳转到结算页面
                     this.$message.success('结算成功！');
                 } else {
-                    // 处理结算失败
                     this.$message.error('结算失败！');
                 }
             } catch (error) {
