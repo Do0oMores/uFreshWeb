@@ -123,7 +123,7 @@ export default {
             const selectedItems = this.cartItems.filter(item => item.selected);
 
             if (selectedItems.length === 0) {
-                this.$message.error('请选择要结算的商品！');
+                ElMessage.warning('请选择要结算的商品');
                 return;
             }
 
@@ -131,7 +131,8 @@ export default {
                 commodity_id: item.commodity_id,
                 spec: item.spec,
                 amount: item.amount,
-                user_id: this.userId
+                user_id: this.userId,
+                cart_item_id: item.cart_item_id
             }));
 
             try {
@@ -141,6 +142,7 @@ export default {
                 });
                 if (response.data.code === 200) {
                     ElMessage.success(response.data.message);
+                    this.fetchData();
                 } else {
                     ElMessage.error(response.data.message);
                 }
