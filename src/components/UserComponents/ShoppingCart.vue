@@ -87,7 +87,6 @@ export default {
                 });
                 if (response.data.code === 200) {
                     this.cartItems = response.data.data;
-                    console.log(this.item);
                 } else {
                     ElMessage.error(response.data.message);
                 }
@@ -121,20 +120,29 @@ export default {
             }
         },
         async checkout() {
-            // 提取选中的商品信息
-            const itemsToCheckout = this.selectedItems.map(item => ({
-                productId: item.id,
+            const selectedItems = this.cartItems.filter(item => item.selected);
+
+            if (selectedItems.length === 0) {
+                this.$message.error('请选择要结算的商品！');
+                return;
+            }
+
+            const itemsToCheckout = selectedItems.map(item => ({
+                commodity_id: item.commodity_id,
                 spec: item.spec,
-                quantity: item.amount,
+                amount: item.amount,
+                user_id: this.userId
             }));
 
-            // 发送请求到后端
             try {
-                const response = await this.$axios.post('/api/checkout', { items: itemsToCheckout });
-                if (response.data.success) {
-                    this.$message.success('结算成功！');
+                console.log(itemsToCheckout);
+                const response = await axios.post('/api/checkout', {
+                    items: itemsToCheckout
+                });
+                if (response.data.code === 200) {
+                    ElMessage.success(response.data.message);
                 } else {
-                    this.$message.error('结算失败！');
+                    ElMessage.error(response.data.message);
                 }
             } catch (error) {
                 console.error('结算请求失败', error);
