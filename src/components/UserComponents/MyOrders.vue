@@ -115,7 +115,7 @@ export default {
         };
 
         const goBack = () => {
-            router.push('/user/shoppingcart'); 
+            router.push('/user/shoppingcart')
         };
 
         const submitOrder = () => {
@@ -133,9 +133,7 @@ export default {
                 const response = await axios.post('/api/getOrders', {
                     user_id: userId.value
                 });
-                console.log(response.data);
                 if (response.data.code === 200) {
-                    console.log(response.data);
                     items.value = response.data.data.order_items.map(order => ({
                         name: order.commodity_name,
                         spec: order.spec,
