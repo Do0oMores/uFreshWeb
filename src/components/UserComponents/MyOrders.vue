@@ -89,6 +89,9 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router'
+
+const router = useRouter();
 
 export default {
     name: 'OrderCheckout',
@@ -112,7 +115,7 @@ export default {
         };
 
         const goBack = () => {
-            alert('返回按钮点击');
+            router.push('/user/shoppingcart'); 
         };
 
         const submitOrder = () => {

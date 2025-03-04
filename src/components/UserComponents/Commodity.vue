@@ -84,8 +84,8 @@ export default {
 }
 
 .product-image {
-  width: 100%;
-  height: auto;
+  width: 200px;
+  height: 200px;
   border-radius: 8px;
   margin-bottom: 10px;
 }
