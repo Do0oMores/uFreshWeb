@@ -13,7 +13,7 @@
                     <div v-for="(item, index) in items" :key="index" class="order-item">
                         <div class="item-details">
                             <el-image
-                                :src="item.image"
+                                :src="'http://localhost:8081' + item.image"
                                 fit="cover"
                                 class="product-image"
                             ></el-image>
@@ -61,10 +61,10 @@
                         <span>优惠</span>
                         <span>-￥{{ discount.toFixed(2) }}</span>
                     </div>
-                    <el-divider>优惠详细信息</el-divider>
+                    <!-- <el-divider>优惠详细信息</el-divider>
                     <div class="discount-details">
                         <p>新店满减：-￥{{ discount.toFixed(2) }}</p>
-                    </div>
+                    </div> -->
                     <el-form-item label="取货方式" class="pickup-method">
                         <el-select v-model="pickupMethod" placeholder="请选择取货方式">
                             <el-option label="自提" value="自提"></el-option>
@@ -88,22 +88,19 @@
 <script>
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 export default {
     name: 'OrderCheckout',
     setup() {
-        const items = ref([
-            { name: '商品名', spec: '商品规格', price: 900, quantity: 1, image: 'https://via.placeholder.com/100' },
-            { name: '商品名', spec: '商品规格', price: 99, quantity: 1, image: 'https://via.placeholder.com/100' },
-        ]);
+        const items = ref([]);
         const orderNote = ref('');
         const pickupMethod = ref('自提');
 
         const totalOriginalPrice = computed(() =>
             items.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
         );
-        const discount = ref(99);
+        const discount = ref(0);
         const totalFinalPrice = computed(() => totalOriginalPrice.value - discount.value);
 
         const increaseQuantity = (index) => {
@@ -122,6 +119,41 @@ export default {
             alert('订单已提交');
         };
 
+        const userId = ref(null);
+
+        const fetchOrders = async () => {
+            if (!userId.value) {
+                ElMessage.error('请先登录');
+                return;
+            }
+            try {
+                const response = await axios.post('/api/getOrders', {
+                    user_id: userId.value
+                });
+                console.log(response.data);
+                if (response.data.code === 200) {
+                    console.log(response.data);
+                    items.value = response.data.data.order_items.map(order => ({
+                        name: order.commodity_name,
+                        spec: order.spec,
+                        price: order.price,
+                        quantity: order.quantity,
+                        image: order.image
+                    }));
+                } else {
+                    ElMessage.error('获取订单失败');
+                }
+            } catch (error) {
+                console.log(error);
+                ElMessage.error('获取数据失败，请稍后再试');
+            }
+        };
+
+        onMounted(() => {
+            userId.value = sessionStorage.getItem('userID');
+            fetchOrders();
+        });
+
         return {
             items,
             orderNote,
@@ -134,7 +166,7 @@ export default {
             goBack,
             submitOrder,
         };
-    },
+    }
 };
 </script>
 
