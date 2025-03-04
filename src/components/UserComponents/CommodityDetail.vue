@@ -34,11 +34,26 @@
                 <h3>数量：<el-input-number v-model="quantity" :min="1" size="small"
                         @change="updateQuantity"></el-input-number></h3>
             </div>
-
             <div class="action-buttons">
                 <button class="add-to-cart" @click="addToCart">加入购物车</button>
                 <button class="buy-now" @click="buyNow">立即购买</button>
             </div>
+        </div>
+    </div>
+    <div class="product-reviews">
+        <h2>用户评价</h2>
+        <div v-if="reviews.length === 0">暂无评价</div>
+        <div v-else v-for="review in reviews" :key="review.id" class="review-item">
+            <div class="review-user">
+                <img :src="'http://localhost:8081' + review.avatar_url" alt="用户头像" class="review-avatar" />
+                <div class="review-user-info">
+                    <span class="review-username">{{ review.user_name }}</span>
+                    <span class="review-recommend" :class="{ recommended: review.judge === 1 }">
+                        {{ review.judge === 1 ? '推荐' : '不推荐' }}
+                    </span>
+                </div>
+            </div>
+            <p class="review-content">{{ review.content }}</p>
         </div>
     </div>
 </template>
@@ -55,12 +70,14 @@ export default {
             quantity: 1,
             commodityId: null,
             selectedSpecId: null,
+            reviews: []
         };
     },
     created() {
         this.commodityId = this.$route.params.commodityId;
         this.fetchProductData();
         this.fetchCommoditySpec();
+        this.fetchReviews();
     },
     methods: {
         async fetchProductData() {
@@ -90,6 +107,22 @@ export default {
             } catch (error) {
                 console.log(error);
                 ElMessage.error('请求失败');
+            }
+        },
+        async fetchReviews() {
+            try {
+                const response = await axios.post('/api/fetch-comments', {
+                    commodity_id: this.commodityId
+                });
+                if (response.data.code === 200) {
+                    this.reviews = response.data.data;
+                } else {
+                    console.error(response.data.message);
+                    ElMessage.error('获取商品评价失败！');
+                }
+            } catch (error) {
+                console.error(error);
+                ElMessage.error('获取评价失败');
             }
         },
         selectSpec(spec) {
@@ -306,5 +339,54 @@ export default {
     color: white;
     background-color: #ff5722;
     border-radius: 4px;
+}
+
+.product-reviews {
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.review-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.review-user {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.review-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.review-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.review-username {
+    font-weight: bold;
+}
+
+.review-recommend {
+    font-size: 12px;
+    color: gray;
+}
+
+.recommended {
+    color: green;
+}
+
+.review-content {
+    font-size: 14px;
+    color: #333;
 }
 </style>
