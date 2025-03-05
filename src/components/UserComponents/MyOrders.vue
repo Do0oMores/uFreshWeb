@@ -12,11 +12,8 @@
                     </div>
                     <div v-for="(item, index) in items" :key="index" class="order-item">
                         <div class="item-details">
-                            <el-image
-                                :src="'http://localhost:8081' + item.image"
-                                fit="cover"
-                                class="product-image"
-                            ></el-image>
+                            <el-image :src="'http://localhost:8081' + item.image" fit="cover"
+                                class="product-image"></el-image>
                             <div class="item-text">
                                 <h3>{{ item.name }}</h3>
                                 <p>商品规格：{{ item.spec }}</p>
@@ -24,28 +21,15 @@
                         </div>
                         <span>￥{{ item.price.toFixed(2) }}</span>
                         <div class="quantity">
-                            <el-button
-                                type="primary"
-                                size="small"
-                                @click="decreaseQuantity(index)"
-                            >-</el-button>
+                            <el-button type="primary" size="small" @click="decreaseQuantity(index)">-</el-button>
                             <span>{{ item.quantity }}</span>
-                            <el-button
-                                type="primary"
-                                size="small"
-                                @click="increaseQuantity(index)"
-                            >+</el-button>
+                            <el-button type="primary" size="small" @click="increaseQuantity(index)">+</el-button>
                         </div>
                         <span class="subtotal">￥{{ (item.price * item.quantity).toFixed(2) }}</span>
                     </div>
                     <el-form-item label="订单备注" class="order-note">
-                        <el-input
-                            type="textarea"
-                            v-model="orderNote"
-                            placeholder="填写备注信息"
-                            rows="3"
-                            show-word-limit
-                        ></el-input>
+                        <el-input type="textarea" v-model="orderNote" placeholder="填写备注信息" rows="3"
+                            show-word-limit></el-input>
                     </el-form-item>
                 </el-card>
             </el-col>
@@ -88,53 +72,52 @@
 <script>
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router'
-
-const router = useRouter();
 
 export default {
     name: 'OrderCheckout',
-    setup() {
-        const items = ref([]);
-        const orderNote = ref('');
-        const pickupMethod = ref('自提');
-
-        const totalOriginalPrice = computed(() =>
-            items.value.reduce((sum, item) => sum + item.price * item.quantity, 0)
-        );
-        const discount = ref(0);
-        const totalFinalPrice = computed(() => totalOriginalPrice.value - discount.value);
-
-        const increaseQuantity = (index) => {
-            items.value[index].quantity++;
+    data() {
+        return {
+            items: [],
+            orderNote: '',
+            pickupMethod: '自提',
+            discount: 0,
+            userId: null
         };
-
-        const decreaseQuantity = (index) => {
-            if (items.value[index].quantity > 1) items.value[index].quantity--;
-        };
-
-        const goBack = () => {
-            router.push('/user/shoppingcart')
-        };
-
-        const submitOrder = () => {
+    },
+    computed: {
+        totalOriginalPrice() {
+            return this.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        },
+        totalFinalPrice() {
+            return this.totalOriginalPrice - this.discount;
+        }
+    },
+    methods: {
+        goBack() {
+            this.$router.push("/user/shoppingcart");
+        },
+        increaseQuantity(index) {
+            this.items[index].quantity++;
+        },
+        decreaseQuantity(index) {
+            if (this.items[index].quantity > 1) {
+                this.items[index].quantity--;
+            }
+        },
+        submitOrder() {
             alert('订单已提交');
-        };
-
-        const userId = ref(null);
-
-        const fetchOrders = async () => {
-            if (!userId.value) {
+        },
+        async fetchOrders() {
+            if (!this.userId) {
                 ElMessage.error('请先登录');
                 return;
             }
             try {
                 const response = await axios.post('/api/getOrders', {
-                    user_id: userId.value
+                    user_id: this.userId
                 });
                 if (response.data.code === 200) {
-                    items.value = response.data.data.order_items.map(order => ({
+                    this.items = response.data.data.order_items.map(order => ({
                         name: order.commodity_name,
                         spec: order.spec,
                         price: order.price,
@@ -145,28 +128,14 @@ export default {
                     ElMessage.error('获取订单失败');
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 ElMessage.error('获取数据失败，请稍后再试');
             }
-        };
-
-        onMounted(() => {
-            userId.value = sessionStorage.getItem('userID');
-            fetchOrders();
-        });
-
-        return {
-            items,
-            orderNote,
-            pickupMethod,
-            totalOriginalPrice,
-            discount,
-            totalFinalPrice,
-            increaseQuantity,
-            decreaseQuantity,
-            goBack,
-            submitOrder,
-        };
+        }
+    },
+    mounted() {
+        this.userId = sessionStorage.getItem('userID');
+        this.fetchOrders();
     }
 };
 </script>
@@ -245,7 +214,7 @@ export default {
     margin-top: 20px;
 }
 
-.total{
+.total {
     font-size: 24px;
     color: #e53935;
     font-weight: bold;

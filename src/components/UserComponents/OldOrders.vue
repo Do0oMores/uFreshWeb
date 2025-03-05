@@ -160,8 +160,7 @@ export default {
     color: #777;
     font-size: 14px;
 }
-
-/* ✅ 让价格和数量垂直排列 */
+                       
 .product-meta {
     display: flex;
     flex-direction: column;
