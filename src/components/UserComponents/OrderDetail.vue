@@ -2,31 +2,33 @@
     <div class="order-container">
         <el-card class="order-card">
             <h2 class="order-title">订单详情</h2>
-            <div v-for="(item, index) in items" :key="index" class="order-item">
+            <div v-for="(order, index) in orders[0].commodity_list" :key="index" class="order-item">
                 <el-row :gutter="20" class="product-row">
                     <el-col :span="6">
-                        <el-image class="product-image" :src="item.image" fit="cover"></el-image>
+                        <el-image class="product-image" :src="'http://localhost:8081' + order.image" fit="cover"></el-image>
                     </el-col>
                     <el-col :span="12">
                         <div class="product-info">
-                            <h3 class="product-name">{{ item.name }}</h3>
-                            <p class="product-spec">{{ item.spec }}</p>
+                            <h3 class="product-name">{{ order.commodity_name }}</h3>
+                            <p class="product-spec">{{ order.spec }}</p>
                         </div>
                     </el-col>
                     <el-col :span="6" class="price-section">
-                        <p class="price">￥{{ item.price }}</p>
-                        <p class="quantity">x{{ item.quantity }}</p>
-                        <p class="total-price"><strong>共计</strong> <span class="price-red">￥{{ item.price *
-                            item.quantity }}</span></p>
+                        <p class="price">￥{{ order.price }}</p>
+                        <p class="quantity">x{{ order.quantity }}</p>
+                        <p class="total-price">
+                            <strong>共计</strong> 
+                            <span class="price-red">￥{{ order.price * order.quantity }}</span>
+                        </p>
                     </el-col>
                 </el-row>
             </div>
             <div class="information">
-                <p><span>订单号：</span></p>
-                <p><span>下单时间：</span></p>
-                <p><span>订单备注：</span></p>
-                <p><span>取货方式：</span></p>
-                <p><span>订单状态：</span></p>
+                <p><span>订单号：{{ orders[0].order_uuid }}</span></p>
+                <p><span>下单时间：{{ orders[0].created_time }}</span></p>
+                <p><span>订单备注：{{ orders[0].order_note }}</span></p>
+                <p><span>取货方式：{{ orders[0].pickup_method }}</span></p>
+                <p><span>订单状态：{{ orders[0].status }}</span></p>
             </div>
             <div class="order-summary">
                 <div class="button-row">
@@ -38,7 +40,7 @@
                 </p>
                 <p class="summary-item total">
                     <span>实付款：</span>
-                    <span class="final-price">￥{{ totalFinalPrice }}</span>
+                    <span class="final-price">￥{{ orders[0].total_price }}</span>
                 </p>
             </div>
         </el-card>
@@ -53,21 +55,24 @@ export default {
     name: "OrderDetails",
     data() {
         return {
-            items: [
+            orders: [
                 {
-                    name: "商品名",
-                    spec: "商品规格",
-                    price: 900,
-                    quantity: 1,
-                    image: "https://via.placeholder.com/100",
-                },
-                {
-                    name: "商品名",
-                    spec: "商品规格",
-                    price: 300,
-                    quantity: 2,
-                    image: "https://via.placeholder.com/100",
-                },
+                    commodity_list: [
+                        {
+                            image: '',
+                            commodity_name: '',
+                            spec: '',
+                            price: 0,
+                            quantity: 0
+                        }
+                    ],
+                    created_time: '',
+                    order_note: '',
+                    pickup_method: '',
+                    status: '',
+                    total_price: 0,
+                    order_uuid: ''
+                }
             ],
             discount: 0,
             orderId: null,
@@ -75,25 +80,22 @@ export default {
     },
     created() {
         this.orderId = this.$route.params.orderId;
-    },
-    computed: {
-        totalFinalPrice() {
-            return this.items.reduce((sum, item) => sum + item.price * item.quantity, 0) - this.discount;
-        },
+        this.getOrderDetails();
     },
     methods: {
         async getOrderDetails(){
-            try{
-                const response= await axios.post('/api/fetch-order-details',{
-                    order_id: this.orderId
+            try {
+                const response = await axios.post('/api/fetch-order-details', {
+                    order_uuid: this.orderId
                 });
-                if(response.data.code === 200){
-                    this.items = response.data.data.commodity_list;
-                    this.discount = response.data.data.discount;
-                }else{
+                console.log(this.orderId);
+                if (response.data.code === 200) {
+                    this.orders = response.data.data;
+                    console.log(this.orders);
+                } else {
                     ElMessage.error(response.data.message);
                 }
-            }catch(error){
+            } catch (error) {
                 console.log(error);
                 ElMessage.error('获取订单详情失败');
             }
