@@ -173,6 +173,22 @@ export default {
                 console.error(error);
                 ElMessage.error('获取数据失败，请稍后再试');
             }
+        },
+        async cancelOrder(){
+            try{
+                const response=await axios.post("/api/cancel-order",{
+                    order_uuid: this.order_uuid,
+                });
+                if(response.data.code===200){
+                    ElMessage.success(response.data.message);
+                    this.$router.push("/user/shoppingcart");
+                }else{
+                    ElMessage.error(response.data.message);
+                }
+            }catch(error){
+                console.log(error);
+                ElMessage.error("请求失败");
+            }
         }
     },
     mounted() {
