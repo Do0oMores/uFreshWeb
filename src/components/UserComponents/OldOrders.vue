@@ -5,14 +5,17 @@
             <div class="order-list">
                 <div v-for="(order, index) in orders" :key="index" class="order-item">
                     <div v-if="order.commodity_list && order.commodity_list.length > 1" class="product-info">
-                        <el-image class="product-image" :src="'http://localhost:8081' + order.commodity_list[0].image" fit="cover">
+                        <el-image class="product-image" :src="'http://localhost:8081' + order.commodity_list[0].image"
+                            fit="cover">
                         </el-image>
                         <div class="product-details">
                             <div class="product-title">
-                                <p>订单号：{{ order.order_uuid }}</p>
-                                <a @click="goToProductDetail(order.order_uuid)">
-                                    {{ order.commodity_list[0].commodity_name }}
+                                <a @click="goOrderDetail(order.order_uuid)">
+                                    <p>订单号：{{ order.order_uuid }}</p>
                                 </a>
+                                <p>
+                                    {{ order.commodity_list[0].commodity_name }}
+                                </p>
                             </div>
                             <div class="product-spec">{{ order.commodity_list[0].spec }}</div>
                         </div>
@@ -41,14 +44,7 @@
 
 <script>
 import axios from 'axios';
-import { useRouter } from "vue-router";
 import { ElMessage } from 'element-plus';
-
-const router = useRouter();
-
-const goToProductDetail = (productId) => {
-    router.push(`/product-detail/${productId}`);
-};
 
 export default {
     data() {
@@ -88,6 +84,9 @@ export default {
                 ElMessage.error('请求失败');
             }
         },
+        goOrderDetail(orderId) {
+            this.$router.push(`/user/orderdetail/${orderId}`);
+        }
     }
 }
 </script>
@@ -160,7 +159,7 @@ export default {
     color: #777;
     font-size: 14px;
 }
-                       
+
 .product-meta {
     display: flex;
     flex-direction: column;

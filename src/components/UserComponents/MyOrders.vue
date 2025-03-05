@@ -60,6 +60,7 @@
                         <span class="total">￥{{ totalFinalPrice.toFixed(2) }}</span>
                     </div>
                     <div class="action-buttons">
+                        <el-button @click="cancelOrder" type="danger">取消订单</el-button>
                         <el-button @click="goBack" type="default">返回</el-button>
                         <el-button @click="submitOrder" type="success" plain>提交订单</el-button>
                     </div>
@@ -71,7 +72,7 @@
 
 <script>
 import axios from 'axios';
-import { ElMessage,ElMessageBox } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 export default {
     name: 'OrderCheckout',
@@ -81,7 +82,8 @@ export default {
             orderNote: '',
             pickupMethod: '自提',
             discount: 0,
-            userId: null
+            userId: null,
+            order_uuid: null
         };
     },
     computed: {
@@ -119,8 +121,24 @@ export default {
                 });
             }
         },
-        submitOrder() {
-            alert('订单已提交');
+        async submitOrder() {
+            try {
+                const response = await axios.post('/api/submit-order', {
+                    order_uuid: this.order_uuid,
+                    order_note: this.orderNote,
+                    pickup_method: this.pickupMethod
+
+                });
+                if (response.data.code === 200) {
+                    ElMessage.success(response.data.message);
+                    this.$router.push('/user/oldorders');
+                } else {
+                    ElMessage.error(response.data.message);
+                }
+            } catch (error) {
+                console.log(error);
+                ElMessage.error("error")
+            }
         },
         async fetchOrders() {
             if (!this.userId) {
@@ -131,14 +149,23 @@ export default {
                 const response = await axios.post('/api/getOrders', {
                     user_id: this.userId
                 });
+
                 if (response.data.code === 200) {
-                    this.items = response.data.data.order_items.map(order => ({
+                    const orderData = response.data.data;
+                    if (!orderData || !orderData.order_items || orderData.order_items.length === 0) {
+                        ElMessage.warning('当前没有未结算订单');
+                        return;
+                    }
+
+                    this.items = orderData.order_items.map(order => ({
                         name: order.commodity_name,
                         spec: order.spec,
                         price: order.price,
                         quantity: order.quantity,
                         image: order.image
                     }));
+                    this.order_uuid = orderData.order_uuid;
+                    ElMessage.success(response.data.message);
                 } else {
                     ElMessage.error('获取订单失败');
                 }

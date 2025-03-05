@@ -112,6 +112,11 @@ const router = createRouter({
           path: 'oldorders',
           name: 'oldorders',
           component: () => import('../components/UserComponents/OldOrders.vue')
+        },
+        {
+          path:'orderdetail/:orderId',
+          name:'orderdetail',
+          component:()=>import('../components/UserComponents/OrderDetail.vue')
         }
       ]
     }
