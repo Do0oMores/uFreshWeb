@@ -71,7 +71,7 @@
 
 <script>
 import axios from 'axios';
-import { ElMessage } from 'element-plus';
+import { ElMessage,ElMessageBox } from 'element-plus';
 
 export default {
     name: 'OrderCheckout',
@@ -102,6 +102,21 @@ export default {
         decreaseQuantity(index) {
             if (this.items[index].quantity > 1) {
                 this.items[index].quantity--;
+            } else {
+                ElMessageBox.confirm(
+                    '是否要移除该商品？',
+                    '确认移除',
+                    {
+                        confirmButtonText: '移除',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                ).then(() => {
+                    this.items.splice(index, 1);
+                    ElMessage.success('商品已移除');
+                }).catch(() => {
+                    ElMessage.info('已取消移除');
+                });
             }
         },
         submitOrder() {
