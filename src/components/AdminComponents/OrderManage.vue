@@ -64,8 +64,12 @@
                 </el-table-column>
                 <el-table-column prop="status" label="订单状态">
                     <template #default="scope">
-                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.status"
-                            placeholder="订单状态"></el-input>
+                        <el-select v-if="editIndex === scope.$index" v-model="scope.row.status" placeholder="订单状态">
+                            <el-option label="待处理" value="待处理"></el-option>
+                            <el-option label="已确认" value="已确认"></el-option>
+                            <el-option label="已完成" value="已完成"></el-option>
+                            <el-option label="已取消" value="已取消"></el-option>
+                        </el-select>
                         <span v-else>{{ scope.row.status }}</span>
                     </template>
                 </el-table-column>
@@ -111,7 +115,7 @@ export default {
             register_time: '',
             message: '',
             status: '',
-            orderId:''
+            orderId: ''
         }
     },
     created() {
@@ -154,36 +158,36 @@ export default {
         //         ElMessage.error("请求失败");
         //     });
         // },
-        saveRow(index: number){
+        saveRow(index: number) {
 
         },
-        selectOrders(){
-            this.orderId=this.orderId.split(/[\t\r\f\n\s]+/g).join('');
-            this.username=this.username.split(/[\t\r\f\n\s]+/g).join('');
-            if(this.orderId!=''||this.username!=''||this.status!=''){
-                axios.post("/api/select_orders",{
-                    order_id:this.orderId,
-                    user_name:this.username,
-                    status:this.status
-                }).then(response=>{
-                    if(response.data.code==200){
+        selectOrders() {
+            this.orderId = this.orderId.split(/[\t\r\f\n\s]+/g).join('');
+            this.username = this.username.split(/[\t\r\f\n\s]+/g).join('');
+            if (this.orderId != '' || this.username != '' || this.status != '') {
+                axios.post("/api/select_orders", {
+                    order_id: this.orderId,
+                    user_name: this.username,
+                    status: this.status
+                }).then(response => {
+                    if (response.data.code == 200) {
                         ElMessage.success("查询成功");
-                        this.message=response.data.message;
-                        this.tableData=response.data.data;
-                        this.orderId='';
-                        this.username='';
-                        this.status='';
-                        setTimeout(()=>{
+                        this.message = response.data.message;
+                        this.tableData = response.data.data;
+                        this.orderId = '';
+                        this.username = '';
+                        this.status = '';
+                        setTimeout(() => {
                             this.isSelected = false;
-                        },500);
-                    }else{
+                        }, 500);
+                    } else {
                         ElMessage.error(response.data.message);
                     }
-                }).catch(error=>{
+                }).catch(error => {
                     console.log(error);
                     ElMessage.error("请求失败");
                 })
-            }else{
+            } else {
                 ElMessage.error("请输入订单信息进行查询");
             }
         }
