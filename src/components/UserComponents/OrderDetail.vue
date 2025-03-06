@@ -32,7 +32,7 @@
             </div>
             <div class="order-summary">
                 <div class="button-row">
-                    <el-button type="primary" class="refund-button">申请售后</el-button>
+                    <el-button type="primary" class="refund-button" @click="gotoAfterSales">申请售后</el-button>
                 </div>
                 <p class="summary-item">
                     <span>优惠：</span>
@@ -99,6 +99,9 @@ export default {
                 console.log(error);
                 ElMessage.error('获取订单详情失败');
             }
+        },
+        gotoAfterSales(){
+            this.$router.push(`/user/aftersales/${this.orderId}`)
         }
     }
 };

@@ -117,6 +117,11 @@ const router = createRouter({
           path:'orderdetail/:orderId',
           name:'orderdetail',
           component:()=>import('../components/UserComponents/OrderDetail.vue')
+        },
+        {
+          path:'aftersales/:orderId',
+          name:'aftersales',
+          component:()=>import('../components/UserComponents/AfterSales.vue')
         }
       ]
     }
