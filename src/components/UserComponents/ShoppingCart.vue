@@ -6,7 +6,8 @@
                     <h1>购物车</h1>
                 </el-col>
                 <el-col :span="12">
-                    <el-input placeholder="搜索" class="search-input" />
+                    <el-input placeholder="请输入商品名" class="search-input" v-model="inputName" />
+                    <el-button class="manage-btn" type="primary" @click="selectItem(inputName)">搜索</el-button>
                     <el-button class="manage-btn" type="primary">管理</el-button>
                 </el-col>
             </el-row>
@@ -62,6 +63,7 @@ export default {
             isSelected: true,
             tableData: [],
             selectAll: false,
+            inputName: '',
         };
     },
     created() {
@@ -149,6 +151,27 @@ export default {
             } catch (error) {
                 console.error('结算请求失败', error);
                 this.$message.error('网络错误，请稍后再试！');
+            }
+        },
+        async selectItem(inputName) {
+            if (!inputName) {
+                ElMessage.warning('请输入商品名');
+                return;
+            } else {
+                try {
+                    const response = await axios.post('/api/select-items', {
+                        user_id: this.userId,
+                        name: inputName
+                    });
+                    if (response.data.code === 200) {
+                        this.cartItems = response.data.data;
+                    } else {
+                        ElMessage.error(response.data.message);
+                    }
+                } catch (error) {
+                    console.log(error);
+                    ElMessage.error('获取数据失败，请稍后再试');
+                }
             }
         }
     }
