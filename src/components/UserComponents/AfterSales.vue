@@ -14,7 +14,7 @@
             <el-form-item label="填写售后原因：">
                 <el-input v-model="reason" type="textarea" placeholder="请填写具体原因"></el-input>
             </el-form-item>
-            <el-form-item label="上传商品图片：">
+            <el-form-item label="上传佐证图片：">
                 <el-upload class="upload-demo" action="#" list-type="picture-card" :on-preview="handlePreview"
                     :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>

@@ -114,14 +114,19 @@ const router = createRouter({
           component: () => import('../components/UserComponents/OldOrders.vue')
         },
         {
-          path:'orderdetail/:orderId',
-          name:'orderdetail',
-          component:()=>import('../components/UserComponents/OrderDetail.vue')
+          path: 'orderdetail/:orderId',
+          name: 'orderdetail',
+          component: () => import('../components/UserComponents/OrderDetail.vue')
         },
         {
-          path:'aftersales/:orderId',
-          name:'aftersales',
-          component:()=>import('../components/UserComponents/AfterSales.vue')
+          path: 'aftersales/:orderId',
+          name: 'aftersales',
+          component: () => import('../components/UserComponents/AfterSales.vue')
+        },
+        {
+          path: 'aftersaledetail/:aftersalesId',
+          name: 'aftersaledetail',
+          component: () => import('../components/UserComponents/AfterSaleDetail.vue')
         }
       ]
     }

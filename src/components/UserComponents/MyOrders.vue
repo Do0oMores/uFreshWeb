@@ -165,7 +165,6 @@ export default {
                         image: order.image
                     }));
                     this.order_uuid = orderData.order_uuid;
-                    ElMessage.success(response.data.message);
                 } else {
                     ElMessage.error('获取订单失败');
                 }
