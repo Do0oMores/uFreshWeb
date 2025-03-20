@@ -1,5 +1,16 @@
 <template>
   <el-main>
+    <el-col :span="12">
+      <el-input placeholder="请输入商品名" class="search-input" v-model="inputName" />
+      <el-select v-model="type" placeholder="请选择商品类型">
+        <el-option label="时令水果" value="时令水果"></el-option>
+        <el-option label="品质肉禽" value="品质肉禽"></el-option>
+        <el-option label="海鲜水产" value="海鲜水产"></el-option>
+        <el-option label="蔬菜蛋品" value="蔬菜蛋品"></el-option>
+        <el-option label="面点烘焙" value="面点烘焙"></el-option>
+      </el-select>
+      <el-button class="manage-btn" type="primary" @click="select()">搜索</el-button>
+    </el-col>
     <el-carousel :interval="5000" arrow="always" style="margin-bottom: 20px;">
       <el-carousel-item v-for="(product, index) in products" :key="product.commodity_id">
         <img :src="'http://localhost:8081' + product.image" alt="product.name"
@@ -30,6 +41,8 @@ export default {
     return {
       products: [],
       userId: null,
+      inputName: '',
+      type: ''
     };
   },
   created() {
@@ -53,12 +66,32 @@ export default {
     goToCommodityDetail(commodityId) {
       console.log(commodityId);
       this.$router.push({ name: 'commoditydetils', params: { commodityId } });
+    },
+    select() {
+      axios.post('/api/searchCommodity', {
+        commodity_name: this.inputName,
+        type: this.type
+      }).then((response) => {
+        if (response.data.code == 200) {
+          this.products = response.data.data;
+        } else {
+          ElMessage.error(response.data.message);
+        }
+      }).catch((error) => {
+        console.log(error);
+        ElMessage.error('请求失败');
+      });
     }
   }
 };
 </script>
 
 <style scoped>
+.search-input {
+  width: 200px;
+  margin-right: 10px;
+}
+
 .products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
