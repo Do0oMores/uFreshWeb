@@ -5,7 +5,8 @@
             <div v-for="(order, index) in orders[0].commodity_list" :key="index" class="order-item">
                 <el-row :gutter="20" class="product-row">
                     <el-col :span="6">
-                        <el-image class="product-image" :src="'http://localhost:8081' + order.image" fit="cover"></el-image>
+                        <el-image class="product-image" :src="'http://localhost:8081' + order.image"
+                            fit="cover"></el-image>
                     </el-col>
                     <el-col :span="12">
                         <div class="product-info">
@@ -17,7 +18,7 @@
                         <p class="price">￥{{ order.price }}</p>
                         <p class="quantity">x{{ order.quantity }}</p>
                         <p class="total-price">
-                            <strong>共计</strong> 
+                            <strong>共计</strong>
                             <span class="price-red">￥{{ order.price * order.quantity }}</span>
                         </p>
                     </el-col>
@@ -31,7 +32,7 @@
                 <p><span>订单状态：{{ orders[0].status }}</span></p>
             </div>
             <div class="order-summary">
-                <div class="button-row">
+                <div class="button-row" v-if="orders[0].status !== '待处理'">
                     <el-button type="primary" class="refund-button" @click="gotoAfterSales">申请售后</el-button>
                 </div>
                 <p class="summary-item">
@@ -83,7 +84,7 @@ export default {
         this.getOrderDetails();
     },
     methods: {
-        async getOrderDetails(){
+        async getOrderDetails() {
             try {
                 const response = await axios.post('/api/fetch-order-details', {
                     order_uuid: this.orderId
@@ -100,7 +101,7 @@ export default {
                 ElMessage.error('获取订单详情失败');
             }
         },
-        gotoAfterSales(){
+        gotoAfterSales() {
             this.$router.push(`/user/aftersales/${this.orderId}`)
         }
     }
