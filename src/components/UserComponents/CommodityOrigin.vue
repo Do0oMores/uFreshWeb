@@ -22,15 +22,12 @@
                     当前查询的商品是 [{{ productName }}] 点击返回重新查询其他商品
                 </el-button>
                 <el-table :data="tableData" stripe border class="table">
-                    <el-table-column prop="name" label="商品名" width="180" />
-                    <el-table-column prop="description" label="描述信息" />
-                    <el-table-column prop="price" label="单价" />
-                    <el-table-column prop="origin" label="来源地" />
-                    <el-table-column prop="production_date" label="生产日期" />
-                    <el-table-column prop="support" label="制造商" />
-                    <el-table-column prop="create_time" label="入库时间" />
-                    <el-table-column prop="shelf_life" label="保质期(天)" />
-                    <el-table-column prop="type" label="类别" />
+                    <el-table-column prop="commodity_name" label="商品名" width="180" />
+                    <el-table-column prop="description" label="描述信息" width="180" />
+                    <el-table-column prop="mfd" label="生产日期" width="180" />
+                    <el-table-column prop="support" label="制造商" width="180"/>
+                    <el-table-column prop="exp" label="保质期" width="180"/>
+                    <el-table-column prop="type" label="类别" width="180"/>
                 </el-table>
             </el-card>
         </el-main>
@@ -52,11 +49,12 @@ export default {
         fetchData() {
             this.productName = this.productName.split(/[\t\r\f\n\s]+/g).join('');
             if (this.productName != "") {
-                axios.get('/api/commodityorigin?productName=' + this.productName).then(response => {
+                axios.post('/api/getCommodityOrigin',{
+                    commodity_name: this.productName
+                }).then(response => {
                     console.log(response.data);
                     if (response.data.code == 200) {
-                        ElMessage.success(response.data.msg);
-                        this.tableData = response.data.Data;
+                        this.tableData = response.data.data;
                         setTimeout(() => {
                             this.isSelected = false;
                         }, 500);

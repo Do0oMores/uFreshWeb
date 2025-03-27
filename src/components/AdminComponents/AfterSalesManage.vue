@@ -18,6 +18,7 @@
                     <el-option label="已提交" value="已提交"></el-option>
                     <el-option label="处理中" value="处理中"></el-option>
                     <el-option label="已完成" value="已完成"></el-option>
+                    <el-option label="售后申请不通过" value="售后申请不通过"></el-option>
                 </el-select>
             </el-col>
 
