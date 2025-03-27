@@ -7,16 +7,17 @@
             </el-form-item>
             <el-form-item label="选择售后类型：">
                 <el-select v-model="afterSaleType" placeholder="请选择">
-                    <el-option label="退货" value="refund"></el-option>
-                    <el-option label="换货" value="exchange"></el-option>
+                    <el-option label="退货" value="退货"></el-option>
+                    <el-option label="换货" value="换货"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="填写售后原因：">
                 <el-input v-model="reason" type="textarea" placeholder="请填写具体原因"></el-input>
             </el-form-item>
             <el-form-item label="上传佐证图片：">
-                <el-upload class="upload-demo" action="#" list-type="picture-card" :on-preview="handlePreview"
-                    :on-remove="handleRemove">
+                <el-upload class="upload-demo" :action="''" list-type="picture-card" :on-preview="handlePreview"
+                    :on-remove="handleRemove" :on-change="handleImageChange" :auto-upload="false" multiple
+                    :file-list="fileList">
                     <i class="el-icon-plus"></i>
                 </el-upload>
             </el-form-item>
@@ -54,8 +55,9 @@ export default {
             orderNumber: "",
             afterSaleType: "",
             reason: "",
-            products:[],
-            orderUid: null
+            products: [],
+            orderUid: null,
+            fileList: ""
         };
     },
     created() {
@@ -68,6 +70,9 @@ export default {
         },
         handleRemove(file) {
             console.log("移除文件", file);
+        },
+        handleImageChange(file, fileList) {
+            this.fileList = fileList;
         },
         async fetchAfterSales() {
             try {
@@ -83,6 +88,34 @@ export default {
             } catch (error) {
                 console.log(error);
                 ElMessage.error("请稍后重试");
+            }
+        },
+        async submitAfterSale() {
+            for (const file of this.fileList) {
+                if (!file.uploaded) {
+                    const formData = new FormData();
+                    formData.append('file', file.raw);
+                    formData.append('order_uuid', this.orderUid);
+                    formData.append("reason", this.reason);
+                    formData.append("type", this.afterSaleType);
+
+                    try {
+                        const response = await axios.post('/api/uploadAfterSales', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        });
+                        if (response.data.code === 200) {
+                            file.uploaded = true; // 标记为已上传
+                            ElMessage.success(response.data.message);
+                        } else {
+                            ElMessage.error(response.data.message);
+                        }
+                    } catch (error) {
+                        console.log(error);
+                        ElMessage.error('上传失败');
+                    }
+                }
             }
         }
     }

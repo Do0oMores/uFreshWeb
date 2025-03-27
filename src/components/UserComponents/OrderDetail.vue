@@ -32,7 +32,7 @@
                 <p><span>订单状态：{{ orders[0].status }}</span></p>
             </div>
             <div class="order-summary">
-                <div class="button-row" v-if="orders[0].status !== '待处理'">
+                <div class="button-row" v-if="orders[0].status == '已完成'">
                     <el-button type="primary" class="refund-button" @click="gotoAfterSales">申请售后</el-button>
                 </div>
                 <p class="summary-item">

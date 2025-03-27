@@ -149,10 +149,10 @@ export default {
                     });
                     const data = response.data;
                     if (data.code === 200) {
-                        ElMessage.success(data.msg);
+                        ElMessage.success(data.message);
                         this.avatarUrl = data.data;
                     } else {
-                        ElMessage.error(data.msg);
+                        ElMessage.error(data.message);
                     }
                 } catch (error) {
                     console.log(error);
