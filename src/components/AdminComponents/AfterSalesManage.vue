@@ -7,17 +7,15 @@
             </el-col>
 
             <el-col :span="4">
-                <el-select v-model="status" placeholder="请选择售后类型" clearable>
+                <el-select v-model="type" placeholder="请选择售后类型" clearable>
                     <el-option label="退货" value="退货"></el-option>
                     <el-option label="换货" value="换货"></el-option>
-                    <el-option label="退款" value="退款"></el-option>
                 </el-select>
             </el-col>
 
             <el-col :span="4">
                 <el-select v-model="status" placeholder="请选择售后进度" clearable>
-                    <el-option label="已提交申请" value="已提交申请"></el-option>
-                    <el-option label="审核中" value="审核中"></el-option>
+                    <el-option label="已提交" value="已提交"></el-option>
                     <el-option label="处理中" value="处理中"></el-option>
                     <el-option label="已完成" value="已完成"></el-option>
                 </el-select>
@@ -29,12 +27,23 @@
         </el-row>
 
         <div class="table-container" v-if="isSelected">
-            <el-table :data="ordertableData" stripe style="width: 100%">
-                <el-table-column prop="after_sales_id" label="售后订单号" />
-                <el-table-column prop="order_id" label="订单号" />
+            <el-table :data="tableData" stripe style="width: 100%">
+                <el-table-column prop="order_uuid" label="订单号" />
                 <el-table-column prop="service_type" label="售后类型" />
                 <el-table-column prop="reasons" label="售后原因" />
-                <el-table-column prop="image" label="图片" />
+                <el-table-column prop="image" label="图片">
+                    <template #default="scope">
+                        <el-image v-if="scope.row.image" style="width: 80px; height: 80px; cursor: pointer"
+                            :src="'http://localhost:8081' + scope.row.image"
+                            :preview-src-list="['http://localhost:8081' + scope.row.image]" fit="cover"
+                            :preview-teleported="true" :z-index="9999">
+                            <template #error>
+                                <div class="image-error">加载失败</div>
+                            </template>
+                        </el-image>
+                        <span v-else>无图片</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="progress" label="售后进度" />
             </el-table>
         </div>
@@ -104,6 +113,7 @@ interface TableData {
     status: string;
     total_price: string;
     created_time: string;
+    type:string;
 }
 
 export default {
@@ -118,7 +128,8 @@ export default {
             phone: '',
             register_time: '',
             message: '',
-            status: ''
+            status: '',
+            type:''
         }
     },
     created() {
@@ -221,7 +232,7 @@ export default {
 
 .el-table {
     border-radius: 8px;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .back-btn {
@@ -262,5 +273,17 @@ export default {
 .save-btn:hover {
     background-color: #7ecf55;
     border-color: #7ecf55;
+}
+
+:deep(.el-image-viewer__wrapper) {
+    z-index: 9999 !important;
+}
+
+:deep(.el-image-viewer__mask) {
+    z-index: 9998 !important;
+}
+
+:deep(.el-image-viewer__canvas) {
+    z-index: 10000 !important;
 }
 </style>
