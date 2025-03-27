@@ -22,7 +22,7 @@
             </el-col>
 
             <el-col :span="2" class="search-actions">
-                <el-button type="primary" @click="selectAllAfterSales()">查询</el-button>
+                <el-button type="primary" @click="selectAfterSales()">查询</el-button>
             </el-col>
         </el-row>
 
@@ -175,9 +175,9 @@ export default {
         },
         saveRow(index: number) {
         },
-        async selectAllAfterSales() {
+        async selectAfterSales() {
             try {
-                const response = await axios.post("/api/getAllAfterSales", {
+                const response = await axios.post("/api/selectAfterSales", {
                     order_uuid: this.order_uuid,
                     service_type: this.type,
                     progress: this.status
