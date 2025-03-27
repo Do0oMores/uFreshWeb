@@ -1,7 +1,10 @@
 <template>
     <div class="product-detail">
         <div class="product-image">
-            <img :src="'http://localhost:8081' + product.image" alt="商品图片" />
+            <el-image style="width: auto; height: 300px; cursor: pointer"
+                :src="'http://localhost:8081' + product.image"
+                :preview-src-list="['http://localhost:8081' + product.image]" fit="cover" :preview-teleported="true"
+                :z-index="9999"></el-image>
         </div>
 
         <div class="product-info">
