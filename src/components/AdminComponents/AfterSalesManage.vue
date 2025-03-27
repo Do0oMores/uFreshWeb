@@ -3,7 +3,7 @@
         <h2 class="title">售后订单管理</h2>
         <el-row :gutter="20" class="search-bar">
             <el-col :span="4">
-                <el-input v-model="username" placeholder="请输入订单号" clearable></el-input>
+                <el-input v-model="order_uuid" placeholder="请输入订单号" clearable></el-input>
             </el-col>
 
             <el-col :span="4">
@@ -22,7 +22,7 @@
             </el-col>
 
             <el-col :span="2" class="search-actions">
-                <el-button type="primary" @click="fetchData()">查询</el-button>
+                <el-button type="primary" @click="selectAllAfterSales()">查询</el-button>
             </el-col>
         </el-row>
 
@@ -51,44 +51,46 @@
 
     <div v-if="!isSelected" class="container">
         <el-button type="primary" style="width:100%;" @click="back()" class="back-btn">
-            {{ message }} 点击返回重新查询其他用户
+            {{ message }} 点击返回重新查询其他售后订单
         </el-button>
         <div class="table-container">
             <el-table :data="tableData" stripe style="width: 100%">
-                <el-table-column prop="name" label="姓名">
+                <el-table-column prop="order_uuid" label="订单号">
                     <template #default="scope">
-                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.user_name"
-                            placeholder="姓名"></el-input>
-                        <span v-else>{{ scope.row.user_name }}</span>
+                        <span>{{ scope.row.order_uuid }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="email" label="电子邮件">
+                <el-table-column prop="service_type" label="售后类型">
                     <template #default="scope">
-                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.email"
-                            placeholder="电子邮件"></el-input>
-                        <span v-else>{{ scope.row.email }}</span>
+                        <span>{{ scope.row.service_type }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="phone" label="电话">
+                <el-table-column prop="reasons" label="售后原因">
                     <template #default="scope">
-                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.phone"
-                            placeholder="电话"></el-input>
-                        <span v-else>{{ scope.row.phone }}</span>
+                        <span>{{ scope.row.reasons }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="is_admin" label="是否为管理员">
+                <el-table-column prop="image" label="图片">
                     <template #default="scope">
-                        <el-select v-if="editIndex === scope.$index" v-model="scope.row.admin_enabled"
-                            placeholder="是否为管理员">
-                            <el-option label="是" value="true"></el-option>
-                            <el-option label="否" value="false"></el-option>
+                        <el-image v-if="scope.row.image" style="width: 80px; height: 80px; cursor: pointer"
+                            :src="'http://localhost:8081' + scope.row.image"
+                            :preview-src-list="['http://localhost:8081' + scope.row.image]" fit="cover"
+                            :preview-teleported="true" :z-index="9999">
+                            <template #error>
+                                <div class="image-error">加载失败</div>
+                            </template>
+                        </el-image>
+                        <span v-else>无图片</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="progress" label="售后进度">
+                    <template #default="scope">
+                        <el-select v-if="editIndex === scope.$index" v-model="scope.row.progress" placeholder="售后进度">
+                            <el-option label="打回订单" value="售后申请不通过"></el-option>
+                            <el-option label="处理中" value="处理中"></el-option>
+                            <el-option label="已完成" value="已完成"></el-option>
                         </el-select>
-                        <span v-else>{{ scope.row.admin_enabled }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="register_time" label="注册日期">
-                    <template #default="scope">
-                        <span>{{ scope.row.register_time }}</span>
+                        <span v-else>{{ scope.row.progress }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作">
@@ -108,19 +110,18 @@ import axios from 'axios';
 import { ElMessage } from "element-plus";
 
 interface TableData {
-    order_id: string;
-    user_name: string;
-    status: string;
-    total_price: string;
-    created_time: string;
-    type:string;
+    order_uuid: string;
+    service_type: string;
+    reasons: string;
+    image: string;
+    progress: string;
 }
 
 export default {
     data() {
         return {
             isSelected: true,
-            username: "",
+            order_uuid: "",
             tableData: [] as TableData[],
             editIndex: -1,
             ordertableData: [],
@@ -129,7 +130,7 @@ export default {
             register_time: '',
             message: '',
             status: '',
-            type:''
+            type: ''
         }
     },
     created() {
@@ -173,8 +174,25 @@ export default {
             this.editIndex = index;
         },
         saveRow(index: number) {
-
         },
+        async selectAllAfterSales() {
+            try {
+                const response = await axios.post("/api/getAllAfterSales", {
+                    order_uuid: this.order_uuid,
+                    service_type: this.type,
+                    progress: this.status
+                });
+                if (response.data.code === 200) {
+                    this.tableData = response.data.data;
+                    console.log(this.tableData);
+                    this.isSelected = false;
+                } else {
+                    ElMessage.error(response.data.message);
+                }
+            } catch (error) {
+                ElMessage.error("服务器错误，请稍后再试");
+            }
+        }
     }
 }
 </script>
