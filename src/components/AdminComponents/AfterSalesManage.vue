@@ -174,6 +174,21 @@ export default {
             this.editIndex = index;
         },
         saveRow(index: number) {
+            const userData = this.tableData[index];
+            axios.post('/api/admin-edit-aftersales', {
+                progress: userData.progress,
+                order_uuid: userData.order_uuid
+            }).then(response => {
+                if (response.data.code == 200) {
+                    ElMessage.success(response.data.message);
+                    this.editIndex = -1;
+                } else {
+                    ElMessage.error(response.data.message);
+                }
+            }).catch(error => {
+                console.log(error);
+                ElMessage.error("请求失败");
+            });
         },
         async selectAfterSales() {
             try {
