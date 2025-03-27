@@ -33,12 +33,12 @@
               <span v-if="!isCollapsed">我的订单</span>
             </el-menu-item>
           </el-tooltip>
-          <el-tooltip content="商品溯源" placement="right">
+          <el-tooltip content="查询商品信息" placement="right">
             <el-menu-item index="4">
               <el-icon>
                 <IconMenu />
               </el-icon>
-              <span v-if="!isCollapsed">商品溯源</span>
+              <span v-if="!isCollapsed">查询商品信息</span>
             </el-menu-item>
           </el-tooltip>
         </el-menu>

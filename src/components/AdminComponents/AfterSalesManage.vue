@@ -30,7 +30,7 @@
         <div class="table-container" v-if="isSelected">
             <el-table :data="tableData" stripe style="width: 100%">
                 <el-table-column prop="order_uuid" label="订单号" />
-                <el-table-column prop="service_type" label="售后类型" />
+                <el-table-column prop="service_type" label="售后类型" width="180px"/>
                 <el-table-column prop="reasons" label="售后原因" />
                 <el-table-column prop="image" label="图片">
                     <template #default="scope">

@@ -1,7 +1,7 @@
 <template>
     <el-container class="container">
         <el-header class="header">
-            <h1 class="title">查询商品溯源信息</h1>
+            <h1 class="title">查询商品信息</h1>
         </el-header>
         <el-main>
             <el-card v-if="isSelected" class="search-card">
@@ -22,12 +22,12 @@
                     当前查询的商品是 [{{ productName }}] 点击返回重新查询其他商品
                 </el-button>
                 <el-table :data="tableData" stripe border class="table">
-                    <el-table-column prop="commodity_name" label="商品名" width="180" />
-                    <el-table-column prop="description" label="描述信息" width="180" />
-                    <el-table-column prop="mfd" label="生产日期" width="180" />
-                    <el-table-column prop="support" label="制造商" width="180"/>
-                    <el-table-column prop="exp" label="保质期" width="180"/>
-                    <el-table-column prop="type" label="类别" width="180"/>
+                    <el-table-column prop="commodity_name" label="商品名" width="80" />
+                    <el-table-column prop="description" label="描述信息" width="200" />
+                    <el-table-column prop="mfd" label="生产日期" width="120" />
+                    <el-table-column prop="support" label="制造商" width="120"/>
+                    <el-table-column prop="exp" label="保质期" width="120"/>
+                    <el-table-column prop="type" label="类别" width="120"/>
                 </el-table>
             </el-card>
         </el-main>
