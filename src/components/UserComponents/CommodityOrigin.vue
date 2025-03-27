@@ -1,35 +1,40 @@
 <template>
-    <div>
-        <div v-if="isSelected">
-            <el-form class="select-div">
-                <h1 class="title">查询商品溯源信息</h1>
-                <el-form-item label="">
-                    <el-input type="text" v-model="productName" placeholder="预查询商品" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" style="width:100%;" @click="fetchData()">
-                        查询
-                    </el-button>
-                </el-form-item>
-            </el-form>
-        </div>
-        <div v-if="!isSelected">
-            <el-button type="primary" style="width:100%;" @click="back()">
-                当前查询的商品是 [{{ productName }}] 点击返回重新查询其他商品
-            </el-button>
-            <el-table :data="tableData" stripe style="width: 100%">
-                <el-table-column prop="name" label="商品名" width="180" />
-                <el-table-column prop="description" label="描述信息" />
-                <el-table-column prop="price" label="单价" />
-                <el-table-column prop="origin" label="来源地" />
-                <el-table-column prop="production_date" label="生产日期" />
-                <el-table-column prop="support" label="制造商" />
-                <el-table-column prop="create_time" label="入库时间" />
-                <el-table-column prop="shelf_life" label="保质期(天)" />
-                <el-table-column prop="type" label="类别" />
-            </el-table>
-        </div>
-    </div>
+    <el-container class="container">
+        <el-header class="header">
+            <h1 class="title">查询商品溯源信息</h1>
+        </el-header>
+        <el-main>
+            <el-card v-if="isSelected" class="search-card">
+                <el-form>
+                    <el-form-item>
+                        <el-input v-model="productName" placeholder="请输入商品名称" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="fetchData" class="search-button">
+                            查询
+                        </el-button>
+                    </el-form-item>
+                </el-form>
+            </el-card>
+
+            <el-card v-if="!isSelected" class="result-card">
+                <el-button type="primary" @click="back" class="back-button">
+                    当前查询的商品是 [{{ productName }}] 点击返回重新查询其他商品
+                </el-button>
+                <el-table :data="tableData" stripe border class="table">
+                    <el-table-column prop="name" label="商品名" width="180" />
+                    <el-table-column prop="description" label="描述信息" />
+                    <el-table-column prop="price" label="单价" />
+                    <el-table-column prop="origin" label="来源地" />
+                    <el-table-column prop="production_date" label="生产日期" />
+                    <el-table-column prop="support" label="制造商" />
+                    <el-table-column prop="create_time" label="入库时间" />
+                    <el-table-column prop="shelf_life" label="保质期(天)" />
+                    <el-table-column prop="type" label="类别" />
+                </el-table>
+            </el-card>
+        </el-main>
+    </el-container>
 </template>
 
 <script lang="ts">
@@ -73,20 +78,52 @@ export default {
 </script>
 
 <style scoped>
-.select-div {
-    border-radius: 10px;
-    margin: 0px auto;
-    width: 350px;
-    padding: 30px 35px 15px 35px;
-    background: #fff;
-    border: 1px solid #eaeaea;
-    text-align: left;
-    box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.1);
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background: #f5f7fa;
 }
 
-.title {
-    margin: 0px auto 40px auto;
+.header {
+    width: 100%;
     text-align: center;
-    color: #505458;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #303133;
+}
+
+.search-card {
+    width: 400px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.search-button {
+    width: 100%;
+}
+
+.result-card {
+    width: 90%;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.back-button {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    border-radius: 5px;
+    overflow: hidden;
 }
 </style>
