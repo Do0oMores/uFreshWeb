@@ -98,26 +98,66 @@ export default {
         goBack() {
             this.$router.push("/user/shoppingcart");
         },
-        increaseQuantity(index) {
-            this.items[index].quantity++;
-        },
-        decreaseQuantity(index) {
-            if (this.items[index].quantity > 1) {
-                this.items[index].quantity--;
+        async increaseQuantity(index) {
+            const response = await axios.post("/api/increaseQuantity1", {
+                order_uuid: this.order_uuid,
+                commodity_id: this.items[index].commodity_id,
+                spec: this.items[index].spec,
+            });
+            if (response.data.code === 200) {
+                this.items[index].quantity++;
             } else {
+                ElMessage.error(response.data.message);
+            }
+        },
+        async decreaseQuantity(index) {
+            if (this.items[index].quantity > 1) {
+                const response = await axios.post("/api/decreaseQuantity1", {
+                    order_uuid: this.order_uuid,
+                    commodity_id: this.items[index].commodity_id,
+                    spec: this.items[index].spec,
+                });
+                if (response.data.code === 200) {
+                    this.items[index].quantity--;
+                } else {
+                    ElMessage.error(response.data.message);
+                }
+            } else {
+                const isLastItem = this.items.length === 1;
                 ElMessageBox.confirm(
-                    '是否要移除该商品？',
-                    '确认移除',
+                    isLastItem ? '这是最后一件商品，是否要清空订单？' : '是否要移除该商品？',
+                    isLastItem ? '确认清空' : '确认移除',
                     {
-                        confirmButtonText: '移除',
+                        confirmButtonText: isLastItem ? '清空' : '移除',
                         cancelButtonText: '取消',
                         type: 'warning',
                     }
-                ).then(() => {
-                    this.items.splice(index, 1);
-                    ElMessage.success('商品已移除');
+                ).then(async () => {
+                    if (isLastItem) {
+                        const response = await axios.post("/api/clearOrder", {
+                            order_uuid: this.order_uuid
+                        });
+                        if (response.data.code === 200) {
+                            this.items = [];
+                            ElMessage.success(response.data.message);
+                        } else {
+                            ElMessage.error(response.data.message);
+                        }
+                    } else {
+                        const response = await axios.post("/api/removeOrderItem", {
+                            order_uuid: this.order_uuid,
+                            commodity_id: this.items[index].commodity_id,
+                            spec: this.items[index].spec,
+                        });
+                        if (response.data.code === 200) {
+                            this.items.splice(index, 1);
+                            ElMessage.success(response.data.message);
+                        } else {
+                            ElMessage.error(response.data.message);
+                        }
+                    }
                 }).catch(() => {
-                    ElMessage.info('已取消移除');
+                    ElMessage.info('已取消操作');
                 });
             }
         },
@@ -162,7 +202,8 @@ export default {
                         spec: order.spec,
                         price: order.price,
                         quantity: order.quantity,
-                        image: order.image
+                        image: order.image,
+                        commodity_id: order.commodity_id
                     }));
                     this.order_uuid = orderData.order_uuid;
                 } else {
@@ -173,18 +214,18 @@ export default {
                 ElMessage.error('获取数据失败，请稍后再试');
             }
         },
-        async cancelOrder(){
-            try{
-                const response=await axios.post("/api/cancel-order",{
+        async cancelOrder() {
+            try {
+                const response = await axios.post("/api/cancel-order", {
                     order_uuid: this.order_uuid,
                 });
-                if(response.data.code===200){
+                if (response.data.code === 200) {
                     ElMessage.success(response.data.message);
                     this.$router.push("/user/shoppingcart");
-                }else{
+                } else {
                     ElMessage.error(response.data.message);
                 }
-            }catch(error){
+            } catch (error) {
                 console.log(error);
                 ElMessage.error("请求失败");
             }

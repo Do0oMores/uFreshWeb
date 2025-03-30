@@ -145,6 +145,7 @@ export default {
                 if (response.data.code === 200) {
                     ElMessage.success(response.data.message);
                     this.fetchData();
+                    this.$router.push(`/user/myorders`);
                 } else {
                     ElMessage.error(response.data.message);
                 }
