@@ -216,7 +216,7 @@ export default {
         },
         async cancelOrder() {
             try {
-                const response = await axios.post("/api/cancel-order", {
+                const response = await axios.post("/api/clearOrder", {
                     order_uuid: this.order_uuid,
                 });
                 if (response.data.code === 200) {
