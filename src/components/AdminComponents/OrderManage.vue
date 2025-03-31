@@ -26,8 +26,8 @@
 
         <div class="table-container" v-if="isSelected">
             <el-table :data="ordertableData" stripe style="width: 100%">
-                <el-table-column prop="order_id" label="订单号" />
-                <el-table-column prop="user_name" label="用户名" />
+                <el-table-column prop="order_uuid" label="订单号" />
+                <el-table-column prop="user_name" label="用户名" width="180px" />
                 <el-table-column prop="status" label="订单状态" />
                 <el-table-column prop="total_price" label="总价" />
                 <el-table-column prop="created_time" label="创建时间" />
@@ -37,36 +37,29 @@
 
     <div v-if="!isSelected" class="container">
         <el-button type="primary" style="width:100%;" @click="back()" class="back-btn">
-            {{ message }} 点击返回重新查询其他用户
+            {{ message }} 点击返回重新查询其他订单
         </el-button>
         <div class="table-container">
             <el-table :data="tableData" stripe style="width: 100%">
-                <el-table-column prop="order_id" label="订单ID">
+                <el-table-column prop="order_uuid" label="订单ID">
                     <template #default="scope">
-                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.order_id"
-                            placeholder="订单ID"></el-input>
-                        <span v-else>{{ scope.row.order_id }}</span>
+                        <span>{{ scope.row.order_uuid }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="user_name" label="用户名">
+                <el-table-column prop="user_name" label="用户名" width="120px">
                     <template #default="scope">
-                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.user_name"
-                            placeholder="用户名"></el-input>
-                        <span v-else>{{ scope.row.user_name }}</span>
+                        <span>{{ scope.row.user_name }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="total_price" label="总价">
+                <el-table-column prop="total_price" label="总价" width="100px">
                     <template #default="scope">
-                        <el-input v-if="editIndex === scope.$index" v-model="scope.row.total_price"
-                            placeholder="电话"></el-input>
-                        <span v-else>{{ scope.row.total_price }}</span>
+                        <span>{{ scope.row.total_price }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="status" label="订单状态">
                     <template #default="scope">
                         <el-select v-if="editIndex === scope.$index" v-model="scope.row.status" placeholder="订单状态">
                             <el-option label="待处理" value="待处理"></el-option>
-                            <el-option label="已确认" value="已确认"></el-option>
                             <el-option label="已完成" value="已完成"></el-option>
                             <el-option label="已取消" value="已取消"></el-option>
                         </el-select>
@@ -95,7 +88,7 @@ import axios from 'axios';
 import { ElMessage } from "element-plus";
 
 interface TableData {
-    order_id: string;
+    order_uuid: string;
     user_name: string;
     status: string;
     total_price: string;
@@ -137,29 +130,23 @@ export default {
         back() {
             this.isSelected = true
         },
-        // saveRow(index: number) {
-        //     const userData = this.tableData[index];
-        //     axios.post('/api/admin-edit-order', {
-        //         user_id: userData.user_id,
-        //         user_name: userData.user_name,
-        //         email: userData.email,
-        //         phone: userData.phone,
-        //         admin_enabled: userData.admin_enabled,
-        //         register_time: userData.register_time
-        //     }).then(response => {
-        //         if (response.data.code == 200) {
-        //             ElMessage.success(response.data.message);
-        //             this.editIndex = -1;
-        //         } else {
-        //             ElMessage.error(response.data.message);
-        //         }
-        //     }).catch(error => {
-        //         console.log(error);
-        //         ElMessage.error("请求失败");
-        //     });
-        // },
-        saveRow(index: number) {
-
+        async saveRow(index: number) {
+            const data = this.tableData[index];
+            try{
+                const response = await axios.post('/api/admin-edit-order-status', {
+                    order_uuid: data.order_uuid,
+                    status: data.status,
+                });
+                if (response.data.code == 200) {
+                    ElMessage.success(response.data.message);
+                    this.editIndex = -1;
+                } else {
+                    ElMessage.error(response.data.message);
+                }
+            } catch (error) {
+                console.log(error);
+                ElMessage.error("请求失败");
+            }
         },
         selectOrders() {
             this.orderId = this.orderId.split(/[\t\r\f\n\s]+/g).join('');
