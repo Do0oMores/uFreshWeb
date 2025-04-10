@@ -29,6 +29,7 @@
                 <p><span>下单时间：{{ orders[0].created_time }}</span></p>
                 <p><span>订单备注：{{ orders[0].order_note }}</span></p>
                 <p><span>取货方式：{{ orders[0].pickup_method }}</span></p>
+                <p v-if="orders[0].completion_time"><span>完成时间：{{ orders[0].completion_time }}</span></p>
                 <p><span>订单状态：{{ orders[0].status }}</span></p>
             </div>
             <div class="order-summary">
@@ -72,7 +73,8 @@ export default {
                     pickup_method: '',
                     status: '',
                     total_price: 0,
-                    order_uuid: ''
+                    order_uuid: '',
+                    completion_time: ''
                 }
             ],
             discount: 0,
@@ -92,7 +94,6 @@ export default {
                 console.log(this.orderId);
                 if (response.data.code === 200) {
                     this.orders = response.data.data;
-                    console.log(this.orders);
                 } else {
                     ElMessage.error(response.data.message);
                 }
@@ -102,7 +103,16 @@ export default {
             }
         },
         gotoAfterSales() {
-            this.$router.push(`/user/aftersales/${this.orderId}`)
+            const completionTime = new Date(this.orders[0].completion_time);
+            const currentTime = new Date();
+            const timeDiff = currentTime - completionTime;
+            const threeDaysInMs = 72 * 60 * 60 * 1000;
+
+            if (timeDiff < threeDaysInMs) {
+                this.$router.push(`/user/aftersales/${this.orderId}`);
+            } else {
+                ElMessage.warning('申请售后已超过三天，无法申请！');
+            }
         }
     }
 };

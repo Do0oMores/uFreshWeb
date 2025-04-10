@@ -4,7 +4,7 @@
             <h2 class="title">历史订单</h2>
             <div class="order-list">
                 <div v-for="(order, index) in orders" :key="index" class="order-item">
-                    <div v-if="order.commodity_list && order.commodity_list.length > 1" class="product-info">
+                    <div v-if="order.commodity_list && order.commodity_list.length >= 1" class="product-info">
                         <el-image class="product-image" :src="'http://localhost:8081' + order.commodity_list[0].image"
                             fit="cover">
                         </el-image>
@@ -30,7 +30,10 @@
                             </span>
                         </div>
                     </div>
-
+                    <div class="order-total">
+                        <span>订单状态：</span>
+                        <span>{{ order.status }}</span>
+                    </div>
                     <div class="order-total">
                         <span>实付款</span>
                         <span class="order-price">￥{{ order.total_price }}</span>
@@ -74,7 +77,6 @@ export default {
                 });
                 if (response.data.code === 200) {
                     this.orders = response.data.data;
-                    console.log(this.orders);
                 } else {
                     this.orders = [];
                     ElMessage.error(response.data.msg);
