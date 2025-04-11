@@ -35,6 +35,12 @@
                         </el-icon>
                         <span v-if="!isCollapsed">售后订单管理</span>
                     </el-menu-item>
+                    <el-menu-item index="5">
+                        <el-icon>
+                            <DataLine />
+                        </el-icon>
+                        <span v-if="!isCollapsed">数据统计</span>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
 
@@ -81,7 +87,8 @@ import {
     Menu as IconMenu,
     Location,
     Setting,
-    ArrowDown
+    ArrowDown,
+    DataLine
 } from '@element-plus/icons-vue'
 
 export default {
@@ -91,7 +98,8 @@ export default {
         IconMenu,
         Location,
         Setting,
-        ArrowDown
+        ArrowDown,
+        DataLine
     },
     data() {
         return {
@@ -110,6 +118,8 @@ export default {
                 this.$router.push('/admin/ordermanage')
             } else if (key == "4") {
                 this.$router.push('/admin/aftersalesmanage')
+            }else if(key=='5'){
+                this.$router.push('/admin/dataanalysis')
             }
         },
         handleCommand(command: string | number | object) {

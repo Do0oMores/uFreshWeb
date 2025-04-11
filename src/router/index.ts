@@ -61,6 +61,11 @@ const router = createRouter({
           path: 'addcommodity',
           name: 'addcommodity',
           component: () => import('../components/AdminComponents/addCommodity.vue')
+        },
+        {
+          path:'dataanalysis',
+          name:'dataanalysis',
+          component:()=>import('../components/AdminComponents/DataAnalysis.vue')
         }
       ]
     },
