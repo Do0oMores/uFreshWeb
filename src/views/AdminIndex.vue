@@ -118,7 +118,7 @@ export default {
                 this.$router.push('/admin/ordermanage')
             } else if (key == "4") {
                 this.$router.push('/admin/aftersalesmanage')
-            }else if(key=='5'){
+            } else if (key == '5') {
                 this.$router.push('/admin/dataanalysis')
             }
         },
