@@ -92,7 +92,7 @@ import {
   Setting,
   ArrowDown
 } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus';
+import { ElMessage,ElNotification } from 'element-plus';
 
 export default {
   name: "SidebarWithTooltip",
@@ -114,6 +114,7 @@ export default {
   created() {
     this.$router.push('user/commodity');
     this.fetchAvatarUrl();
+    this.fetchNotificationCount();
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -161,6 +162,26 @@ export default {
           })
           .catch(error => {
             console.error('获取头像失败:', error);
+          });
+      }
+    },
+    fetchNotificationCount() {
+      const userId = this.getUserId();
+      if (userId) {
+        axios.post('/api/getNotificationCount', { user_id: userId })
+          .then(response => {
+            if (response.data.code===200) {
+              ElNotification({
+                title: '消息通知',
+                message: `您有 ${response.data.data} 条新消息`,
+                type: 'info',
+                duration: 5000,
+                position: 'top-right',
+              });
+            }
+          })
+          .catch(error => {
+            console.error('获取通知数量失败:', error);
           });
       }
     }

@@ -93,6 +93,7 @@ interface TableData {
     status: string;
     total_price: string;
     created_time: string;
+    user_id: string;
 }
 
 export default {
@@ -136,6 +137,7 @@ export default {
                 const response = await axios.post('/api/admin-edit-order-status', {
                     order_uuid: data.order_uuid,
                     status: data.status,
+                    user_id: data.user_id
                 });
                 if (response.data.code == 200) {
                     ElMessage.success(response.data.message);
