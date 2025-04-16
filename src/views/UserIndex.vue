@@ -66,7 +66,7 @@
                 <el-dropdown-menu>
                   <el-dropdown-item @click="toUserInformation">个人信息</el-dropdown-item>
                   <el-dropdown-item @click="toOlderOrders">历史订单</el-dropdown-item>
-                  <el-dropdown-item>消息中心</el-dropdown-item>
+                  <el-dropdown-item @click="toNotificationCenter">消息中心</el-dropdown-item>
                   <el-dropdown-item command="quit">退出系统</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -112,7 +112,7 @@ export default {
     }
   },
   created() {
-    this.$router.push('user/commodity');
+    this.$router.push('/user/commodity');
     this.fetchAvatarUrl();
     this.fetchNotificationCount();
   },
@@ -133,6 +133,9 @@ export default {
     },
     toOlderOrders(){
       this.$router.push('/user/oldorders')
+    },
+    toNotificationCenter() {
+      this.$router.push('/notification')
     },
     getUserId() {
       return sessionStorage.getItem('userID') || null;

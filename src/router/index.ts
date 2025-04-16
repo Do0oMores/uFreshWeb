@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('../views/test.vue')
     },
     {
+      path: '/notification',
+      name: 'notification',
+      component: () => import('../views/Notification.vue')
+    },
+    {
       path: '/admin',
       name: 'adminRouter',
       meta: {
@@ -63,9 +68,9 @@ const router = createRouter({
           component: () => import('../components/AdminComponents/addCommodity.vue')
         },
         {
-          path:'dataanalysis',
-          name:'dataanalysis',
-          component:()=>import('../components/AdminComponents/DataAnalysis.vue')
+          path: 'dataanalysis',
+          name: 'dataanalysis',
+          component: () => import('../components/AdminComponents/DataAnalysis.vue')
         }
       ]
     },
