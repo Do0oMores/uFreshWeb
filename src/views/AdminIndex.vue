@@ -63,6 +63,7 @@
                             </span>
                             <template #dropdown>
                                 <el-dropdown-menu>
+                                    <el-dropdown-item @click="gotoNotificationCenter">消息中心</el-dropdown-item>
                                     <el-dropdown-item command="quit">退出系统</el-dropdown-item>
                                 </el-dropdown-menu>
                             </template>
@@ -141,6 +142,9 @@ export default {
         },
         goToSearchProductPage() {
             this.$router.push('/search-product');
+        },
+        gotoNotificationCenter(){
+            this.$router.push('/notification')
         }
     }
 }
