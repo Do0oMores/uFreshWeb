@@ -82,7 +82,8 @@
 
 <script lang="ts">
 import GlobalVar from "../stores/global";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
+import axios from 'axios';
 import {
     Document,
     Menu as IconMenu,
@@ -108,6 +109,10 @@ export default {
             isSidebarVisible: true,
             isCollapsed: false
         }
+    },
+    created() {
+        this.$router.push('/admin/usermanage');
+        this.fetchNotificationCount();
     },
     methods: {
         handleSelect(key: string, keyPath: string[]) {
@@ -143,8 +148,32 @@ export default {
         goToSearchProductPage() {
             this.$router.push('/search-product');
         },
-        gotoNotificationCenter(){
+        gotoNotificationCenter() {
             this.$router.push('/notification')
+        },
+        getUserId() {
+            return sessionStorage.getItem('userID') || null;
+        },
+        fetchNotificationCount() {
+            const userId = this.getUserId();
+            console.log('userId:', userId)
+            if (userId) {
+                axios.post('/api/getNotificationCount', { user_id: userId })
+                    .then(response => {
+                        if (response.data.code === 200) {
+                            ElNotification({
+                                title: '消息通知',
+                                message: `您有 ${response.data.data} 条新消息`,
+                                type: 'info',
+                                duration: 5000,
+                                position: 'top-right',
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('获取通知数量失败:', error);
+                    });
+            }
         }
     }
 }

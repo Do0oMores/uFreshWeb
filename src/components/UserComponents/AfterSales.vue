@@ -107,6 +107,7 @@ export default {
                         });
                         if (response.data.code === 200) {
                             file.uploaded = true; // 标记为已上传
+                            this.$router.push("/user/commodity")
                             ElMessage.success(response.data.message);
                         } else {
                             ElMessage.error(response.data.message);
