@@ -28,8 +28,15 @@
       </div>
 
       <div class="form-item">
-        <label for="productPrice">商品单价</label>
-        <input type="number" id="productPrice" v-model="product.price" required />
+        <label>商品规格</label>
+        <div class="specs-container">
+          <div v-for="(spec, index) in product.specs" :key="index" class="spec-item">
+            <input type="text" v-model="spec.name" placeholder="规格名称(如:500g)" required />
+            <input type="number" v-model="spec.price" placeholder="价格" min="0" step="0.01" required />
+            <button type="button" @click="removeSpec(index)" class="remove-btn">删除</button>
+          </div>
+          <button type="button" @click="addSpec" class="add-btn">添加规格</button>
+        </div>
       </div>
 
       <div class="form-item">
@@ -74,18 +81,31 @@ export default {
       product: {
         commodity_name: '',
         type: '',
-        price: '',
         inventory: '',
         description: '',
         support: '',
         mfg: '',
-        exp: ''
+        exp: '',
+        specs: [
+          { name: '', price: '' }
+        ]
       },
       productImage: null,
       productImagePreview: null
     };
   },
   methods: {
+    addSpec() {
+      this.product.specs.push({ name: '', price: '' });
+    },
+
+    removeSpec(index) {
+      if (this.product.specs.length > 1) {
+        this.product.specs.splice(index, 1);
+      } else {
+        ElMessage.warning('至少保留一个规格');
+      }
+    },
     handleImageUpload(event) {
       const file = event.target.files[0];
       if (file) {
@@ -94,11 +114,27 @@ export default {
       }
     },
     async handleSubmit() {
+      // 验证规格数据
+      for (const spec of this.product.specs) {
+        if (!spec.name || !spec.price) {
+          ElMessage.warning('请填写完整的规格信息');
+          return;
+        }
+      }
+
       const formData = new FormData();
       formData.append('file', this.productImage);
+
+      // 将规格数据转为JSON字符串
+      formData.append('specs', JSON.stringify(this.product.specs));
+
+      // 添加其他字段
       Object.keys(this.product).forEach((key) => {
-        formData.append(key, this.product[key]);
+        if (key !== 'specs') {
+          formData.append(key, this.product[key]);
+        }
       });
+
       try {
         const response = await axios.post('/api/addCommodityData', formData, {
           headers: {
@@ -112,27 +148,42 @@ export default {
           ElMessage.error(data.message);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         ElMessage.error('提交失败');
       }
       this.resetForm();
     },
     resetForm() {
       this.product = {
-        productName: '',
-        productCategory: '',
-        productPrice: '',
-        productStock: '',
-        productDescription: '',
-        productSupplier: '',
-        productManufactureDate: '',
-        productShelfLife: ''
+        commodity_name: '',
+        type: '',
+        price: '',
+        inventory: '',
+        description: '',
+        support: '',
+        mfg: '',
+        exp: '',
+        specs: [{ name: '', price: '' }]
       };
       this.productImage = null;
       this.productImagePreview = null;
     }
+  },
+  resetForm() {
+    this.product = {
+      productName: '',
+      productCategory: '',
+      productPrice: '',
+      productStock: '',
+      productDescription: '',
+      productSupplier: '',
+      productManufactureDate: '',
+      productShelfLife: ''
+    };
+    this.productImage = null;
+    this.productImagePreview = null;
   }
-};
+}
 </script>
 
 <style scoped>

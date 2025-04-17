@@ -71,6 +71,11 @@ const router = createRouter({
           path: 'dataanalysis',
           name: 'dataanalysis',
           component: () => import('../components/AdminComponents/DataAnalysis.vue')
+        },
+        {
+          path:'waste',
+          name:'waste',
+          component:()=>import('../components/AdminComponents/Waste.vue')
         }
       ]
     },

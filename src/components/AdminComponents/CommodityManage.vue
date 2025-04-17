@@ -36,6 +36,7 @@
 
     <el-row class="button-group">
       <el-button type="primary" @click="addProduct()">新增</el-button>
+      <el-button type="primary" @click="addWaste()">损耗</el-button>
     </el-row>
 
     <div v-if="isSelected" class="table-container">
@@ -72,8 +73,8 @@
           <el-table-column prop="image" label="商品图片">
             <template #default="scope">
               <div v-if="editIndex === scope.$index">
-                <el-upload :auto-upload="false" :before-upload="beforeImageUpload"
-                  :on-change="uploadImage" show-file-list="false" name="file">
+                <el-upload :auto-upload="false" :before-upload="beforeImageUpload" :on-change="uploadImage"
+                  show-file-list="false" name="file">
                   <el-button type="primary" icon="el-icon-upload">上传图片</el-button>
                 </el-upload>
               </div>
@@ -151,11 +152,20 @@
               <span v-else>{{ scope.row.tag }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="120" align="center">
             <template #default="scope">
-              <el-button v-if="editIndex !== scope.$index" @click="editRow(scope.$index)"
-                class="edit-btn">编辑</el-button>
-              <el-button v-else type="primary" @click="saveRow(scope.$index)" class="save-btn">确认</el-button>
+              <div class="action-buttons">
+                <div class="button-row">
+                  <el-button v-if="editIndex !== scope.$index" size="small" @click="editRow(scope.$index)"
+                    class="edit-btn">编辑</el-button>
+                  <el-button v-else size="small" type="primary" @click="saveRow(scope.$index)"
+                    class="save-btn">确认</el-button>
+                </div>
+                <div class="button-row">
+                  <el-button size="small" type="danger" @click="deleteRow(scope.$index)"
+                    class="delete-btn">删除</el-button>
+                </div>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -278,6 +288,24 @@ export default {
           ElMessage.error("请求失败");
         });
     },
+    deleteRow(index: number) {
+      const productData = this.tableData[index];
+      axios.post('/api/delete-commodity', {
+        commodity_id: productData.commodity_id,
+      })
+        .then(response => {
+          if (response.data.code == 200) {
+            ElMessage.success(response.data.message);
+            this.tableData.splice(index, 1);
+          } else {
+            ElMessage.error("删除失败：" + response.data.message);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          ElMessage.error("请求失败");
+        });
+    },
     async fetchCommodities() {
       try {
         const response = await axios.post("/api/fetch-commodities");
@@ -330,12 +358,15 @@ export default {
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG && !isPNG) {
         ElMessage.error('上传格式只能是JPG PNG格式！');
-        return false; // 阻止上传
+        return false;
       }
       if (!isLt2M) {
         ElMessage.error('上传头像图片大小不能超过2MB！');
-        return false; // 阻止上传
+        return false;
       }
+    },
+    addWaste() {
+      this.$router.push("/admin/waste")
     }
   },
 };
