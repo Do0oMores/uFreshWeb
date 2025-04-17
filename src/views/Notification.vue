@@ -36,10 +36,11 @@
                                 <el-badge v-if="!message.isRead" is-dot class="unread-dot" />
                             </div>
                             <div class="message-body">
-                                <router-link v-if="message.link" :to="message.link" @click="markAsRead(message)">
+                                <!-- <router-link v-if="message.link" :to="message.link" @click="markAsRead(message)">
                                     {{ message.content }}
                                 </router-link>
-                                <span v-else>{{ message.content }}</span>
+                                <span v-else>{{ message.content }}</span> -->
+                                <span>{{ message.content }}</span>
                             </div>
                             <div class="message-time">{{ formatTime(message.time) }}</div>
                         </div>
