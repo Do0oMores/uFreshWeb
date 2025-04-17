@@ -142,6 +142,11 @@ const router = createRouter({
           path: 'aftersaledetail/:aftersalesId',
           name: 'aftersaledetail',
           component: () => import('../components/UserComponents/AfterSaleDetail.vue')
+        },
+        {
+          path:'comment/:commentId',
+          name: 'comment',
+          component:()=>import('../components/UserComponents/Comment.vue')
         }
       ]
     }

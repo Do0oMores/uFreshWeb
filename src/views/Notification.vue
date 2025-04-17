@@ -26,7 +26,7 @@
 
                 <div v-else>
                     <div v-for="message in filteredMessages" :key="message.id" class="message-item"
-                        :class="{ 'unread': !message.isRead }" @click="markAsRead(message)">
+                        :class="{ 'unread': !message.isRead }">
                         <div class="message-content">
                             <div class="message-title">
                                 <el-tag v-if="message.type" size="small" :type="getTagType(message.type)">
@@ -35,7 +35,12 @@
                                 <span>{{ message.title }}</span>
                                 <el-badge v-if="!message.isRead" is-dot class="unread-dot" />
                             </div>
-                            <div class="message-body">{{ message.content }}</div>
+                            <div class="message-body">
+                                <router-link v-if="message.link" :to="message.link" @click="markAsRead(message)">
+                                    {{ message.content }}
+                                </router-link>
+                                <span v-else>{{ message.content }}</span>
+                            </div>
                             <div class="message-time">{{ formatTime(message.time) }}</div>
                         </div>
                     </div>
@@ -69,7 +74,8 @@ const fetchNotificationList = async () => {
                 content: msg.notification_content,
                 isRead: msg.enable_read,
                 type: msg.type,
-                time: new Date(msg.time)
+                time: new Date(msg.time),
+                link: msg.link
             }));
         } else {
             ElMessage.error(response.data.message);
@@ -134,21 +140,27 @@ const formatTime = (time) => {
 
 const markAsRead = async (message) => {
     try {
-        const response = await axios.post("/api/mark-as-read", {
-            user_id: getUserId(),
-            id: message.id
-        });
-        if (response.data.code === 200) {
-            if (!message.isRead) {
-                message.isRead = true
+        if (!message.isRead) {
+            const response = await axios.post("/api/mark-as-read", {
+                user_id: getUserId(),
+                id: message.id
+            });
+            if (response.data.code === 200) {
+                message.isRead = true;
+                if (message.link) {
+                    setTimeout(() => {
+                        this.$router.push(message.link);
+                    }, 100);
+                }
+            } else {
+                ElMessage.error(response.data.message);
             }
-        } else {
-            ElMessage.error(response.data.message)
+        } else if (message.link) {
+            this.$router.push(message.link);
         }
-    }catch (error) {
-        ElMessage.error('发生错误', error)
+    } catch (error) {
+        ElMessage.error('发生错误', error);
     }
-    
 }
 
 const markAllAsRead = () => {
@@ -244,5 +256,19 @@ const getUserId = () => {
 
 .el-tag {
     margin-right: 8px;
+}
+
+.message-content a {
+    color: var(--el-color-primary);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.message-content a:hover {
+    text-decoration: underline;
+}
+
+.unread .message-content a {
+    font-weight: bold;
 }
 </style>
