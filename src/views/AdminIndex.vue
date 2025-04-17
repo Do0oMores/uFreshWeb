@@ -39,7 +39,7 @@
                         <el-icon>
                             <DataLine />
                         </el-icon>
-                        <span v-if="!isCollapsed">数据统计</span>
+                        <span v-if="!isCollapsed">数据分析</span>
                     </el-menu-item>
                 </el-menu>
             </el-aside>

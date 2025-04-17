@@ -51,7 +51,7 @@
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
         <el-card shadow="hover" class="data-card">
           <div class="data-card-content">
-            <div class="data-value">¥ 24,560</div>
+            <div class="data-value">¥ 2460</div>
             <div class="data-label">今日销售额</div>
             <el-icon class="data-icon" color="#67C23A">
               <TrendCharts />
@@ -62,7 +62,7 @@
       <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
         <el-card shadow="hover" class="data-card">
           <div class="data-card-content">
-            <div class="data-value">1,256</div>
+            <div class="data-value">148</div>
             <div class="data-label">今日订单数</div>
             <el-icon class="data-icon" color="#409EFF">
               <Document />
@@ -194,7 +194,6 @@ export default {
       ]
     })
 
-    // 生成随机数据
     const generateRandomData = (days, min, max) => {
       return Array.from({ length: days }, () =>
         Math.floor(Math.random() * (max - min + 1)) + min
