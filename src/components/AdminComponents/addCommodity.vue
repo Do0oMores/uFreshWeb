@@ -31,7 +31,7 @@
         <label>商品规格</label>
         <div class="specs-container">
           <div v-for="(spec, index) in product.specs" :key="index" class="spec-item">
-            <input type="text" v-model="spec.name" placeholder="规格名称(如:500g)" required />
+            <input type="text" v-model="spec.spec" placeholder="规格名称(如:500g)" required />
             <input type="number" v-model="spec.price" placeholder="价格" min="0" step="0.01" required />
             <button type="button" @click="removeSpec(index)" class="remove-btn">删除</button>
           </div>
@@ -87,7 +87,7 @@ export default {
         mfg: '',
         exp: '',
         specs: [
-          { name: '', price: '' }
+          { spec: '', price: '' }
         ]
       },
       productImage: null,
@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     addSpec() {
-      this.product.specs.push({ name: '', price: '' });
+      this.product.specs.push({ spec: '', price: '' });
     },
 
     removeSpec(index) {
@@ -116,7 +116,7 @@ export default {
     async handleSubmit() {
       // 验证规格数据
       for (const spec of this.product.specs) {
-        if (!spec.name || !spec.price) {
+        if (!spec.spec || !spec.price) {
           ElMessage.warning('请填写完整的规格信息');
           return;
         }
