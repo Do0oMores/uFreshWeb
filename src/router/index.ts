@@ -24,11 +24,6 @@ const router = createRouter({
       component: () => import('../views/test.vue')
     },
     {
-      path: '/notification',
-      name: 'notification',
-      component: () => import('../views/Notification.vue')
-    },
-    {
       path: '/admin',
       name: 'adminRouter',
       meta: {
@@ -76,7 +71,12 @@ const router = createRouter({
           path:'waste',
           name:'waste',
           component:()=>import('../components/AdminComponents/Waste.vue')
-        }
+        },
+        {
+          path: '/notificationAdmin',
+          name: 'notificationAdmin',
+          component: () => import('../components/AdminComponents/Notification.vue')
+        },
       ]
     },
     {
@@ -147,7 +147,12 @@ const router = createRouter({
           path:'comment/:commentId',
           name: 'comment',
           component:()=>import('../components/UserComponents/Comment.vue')
-        }
+        },
+        {
+          path: '/notification',
+          name: 'notification',
+          component: () => import('../components/UserComponents/Notification.vue')
+        },
       ]
     }
   ]

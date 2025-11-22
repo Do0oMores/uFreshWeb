@@ -27,7 +27,7 @@
                 <div v-else>
                     <div v-for="message in filteredMessages" :key="message.id" class="message-item"
                         :class="{ 'unread': !message.isRead }">
-                        <div class="message-content">
+                        <div class="message-content" @click="markAsRead(message)">
                             <div class="message-title">
                                 <el-tag v-if="message.type" size="small" :type="getTagType(message.type)">
                                     {{ message.type }}
@@ -36,11 +36,11 @@
                                 <el-badge v-if="!message.isRead" is-dot class="unread-dot" />
                             </div>
                             <div class="message-body">
-                                <!-- <router-link v-if="message.link" :to="message.link" @click="markAsRead(message)">
+                                <router-link v-if="message.link" :to="message.link">
                                     {{ message.content }}
                                 </router-link>
-                                <span v-else>{{ message.content }}</span> -->
-                                <span>{{ message.content }}</span>
+                                <span v-else>{{ message.content }}</span>
+                                <!-- <span>{{ message.content }}</span> -->
                             </div>
                             <div class="message-time">{{ formatTime(message.time) }}</div>
                         </div>

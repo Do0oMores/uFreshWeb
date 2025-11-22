@@ -149,7 +149,7 @@ export default {
             this.$router.push('/search-product');
         },
         gotoNotificationCenter() {
-            this.$router.push('/notification')
+            this.$router.push('/notificationAdmin')
         },
         getUserId() {
             return sessionStorage.getItem('userID') || null;

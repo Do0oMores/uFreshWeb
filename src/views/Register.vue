@@ -63,10 +63,10 @@ export default {
 						const statusCode = Object.keys(data)[0];
 						const message = data[statusCode];
 
-						if (statusCode === "200") {
-							ElMessage.success(message);
+						if (response.data.code === 200) {
+							ElMessage.success(response.data.message);
 						} else {
-							ElMessage.error(message);
+							ElMessage.error(response.data.message);
 						}
 					})
 					.catch((error) => {

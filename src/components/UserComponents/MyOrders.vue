@@ -52,7 +52,7 @@
                     <el-form-item label="取货方式" class="pickup-method">
                         <el-select v-model="pickupMethod" placeholder="请选择取货方式">
                             <el-option label="自提" value="自提"></el-option>
-                            <el-option label="配送" value="配送"></el-option>
+                            <el-option label="三公里配送" value="配送"></el-option>
                         </el-select>
                     </el-form-item>
                     <div class="total-payment">
